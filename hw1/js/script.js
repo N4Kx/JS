@@ -21,7 +21,7 @@ while (patronymic.length < 1) {
 	patronymic = prompt('Введите Ваше отчество');
 }
 
-while (isNaN(ageYears)) {
+while (isNaN(ageYears) || Number(ageYears) < 0) {
 	ageYears = prompt('Введите ваш возраст в годах');
 }
 
