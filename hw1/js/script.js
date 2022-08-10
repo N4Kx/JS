@@ -21,6 +21,10 @@ while (patronymic.length < 1) {
 	patronymic = prompt('Введите Ваше отчество');
 }
 
+while (isNaN(ageYears)) {
+	ageYears = prompt('Введите ваш возраст в годах');
+}
+
 alert(
 	`Ваше ФИО: ${lastName} ${firstName} ${patronymic} \nВаш возраст в годах: ${ageYears} \nВаш возраст в днях: ${ageDays} \nЧерез 5 лет вам будет: ${ageAfterFive} \nВаш пол: ${gender} \nВы на пенсии: ${pension}`
 );
