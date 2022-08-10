@@ -2,7 +2,7 @@ let lastName = prompt('Введите Вашу фамилию');
 let firstName = prompt('Введите Ваше имя');
 let patronymic = prompt('Введите Ваше отчество');
 let ageYears = prompt('Введите ваш возраст в годах');
-let ageDays = ageYears * 365;
+let ageDays = Number(ageYears) * 365;
 let ageAfterFive = Number(ageYears) + 5;
 let gender = confirm('Ваш пол мужской?');
 
