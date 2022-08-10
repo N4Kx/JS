@@ -11,10 +11,15 @@ gender ? gender = 'мужской' : gender = 'женский';
 let pension;
 (gender == 'мужской') ? (ageYears >= 65 ? pension = 'да' : pension = 'нет') : (ageYears >= 61 ? pension = 'да' : pension = 'нет');
 
-if (lastName.length > 0) {
+while (lastName.length < 1) {
 	lastName = prompt('Введите Вашу фамилию');
 }
-
+while (firstName.length < 1) {
+	firstName = prompt('Введите Ваше имя');
+}
+while (patronymic.length < 1) {
+	patronymic = prompt('Введите Ваше отчество');
+}
 
 alert(
 	`Ваше ФИО: ${lastName} ${firstName} ${patronymic} \nВаш возраст в годах: ${ageYears} \nВаш возраст в днях: ${ageDays} \nЧерез 5 лет вам будет: ${ageAfterFive} \nВаш пол: ${gender} \nВы на пенсии: ${pension}`
