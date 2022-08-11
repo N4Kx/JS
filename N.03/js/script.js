@@ -16,14 +16,15 @@ while (patronymic === null || patronymic.length < 1 || isFinite(patronymic)) {
 	patronymic = prompt('Введите Ваше отчество');
 }
 
-let ageYears = prompt('Введите ваш возраст в годах');
+let ageYearsString = prompt('Введите ваш возраст в годах');
 /*проверка, что значение переменной не null, строка не пустая, не NaN, число больше или равно 0 */
-while (ageYears === null || ageYears.length < 1 || isNaN(ageYears) || Number(ageYears) < 0) {
-	ageYears = prompt('Введите ваш возраст в годах');
+while (ageYearsString === null || ageYearsString.length < 1 || isNaN(ageYearsString) || Number(ageYearsString) < 0) {
+	ageYearsString = prompt('Введите ваш возраст в годах');
 }
 
-let ageDays = Number(ageYears) * 365;
-let ageAfterFive = Number(ageYears) + 5;
+let ageYears = Number(ageYearsString);
+let ageDays = ageYears * 365;
+let ageAfterFive = ageYears + 5;
 
 let genderBool = confirm('Ваш пол мужской?');
 let maleBool;
@@ -31,7 +32,7 @@ let maleBool;
 genderBool ? maleBool = true : maleBool = false;
 
 let genderString;
-maleBool == true ? genderString = 'Мужской' : genderString = 'Женский';
+genderString = (maleBool == true) ? 'Мужской' : 'Женский';
 
 let pension;
 let pensionMale;
