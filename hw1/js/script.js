@@ -3,23 +3,23 @@ let firstName = prompt('Введите Ваше имя');
 let patronymic = prompt('Введите Ваше отчество');
 let ageYears = prompt('Введите ваш возраст в годах');
 
-/*проверка, что фамилия длиннее 1 символа и не число*/
-while (lastName.length < 1 || isFinite(lastName)) {
+/*проверка, что значение переменной не null, длиннее 1 символа и не число*/
+while (lastName === null || lastName.length < 1 || isFinite(lastName)) {
 	lastName = prompt('Введите Вашу фамилию');
 }
 
-/*проверка, что имя длиннее 1 символа и не число*/
-while (firstName.length < 1 || isFinite(firstName)) {
+/*проверка, что значение переменной не null, длиннее 1 символа и не число*/
+while (firstName === null || firstName.length < 1 || isFinite(firstName)) {
 	firstName = prompt('Введите Ваше имя');
 }
 
-/*проверка, что отчество длиннее 1 символа и не число*/
-while (patronymic.length < 1 || isFinite(patronymic)) {
+/*проверка, что значение переменной не null, длиннее 1 символа и не число*/
+while (patronymic === null || patronymic.length < 1 || isFinite(patronymic)) {
 	patronymic = prompt('Введите Ваше отчество');
 }
 
-/*проверка, что возраст не NaN или число больше 0 или не буква */
-while (isNaN(ageYears) || Number(ageYears) < 0 || !isFinite(ageYears)) {
+/*проверка, что значение переменной не null, не NaN, число больше 0 и не буква */
+while (isNaN(ageYears) || ageYears === null || Number(ageYears) < 0 || !isFinite(ageYears)) {
 	ageYears = prompt('Введите ваш возраст в годах');
 }
 
