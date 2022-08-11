@@ -17,8 +17,8 @@ while (patronymic === null || patronymic.length < 1 || isFinite(patronymic)) {
 }
 
 let ageYears = prompt('Введите ваш возраст в годах');
-/*проверка, что значение переменной не null, не NaN, число больше 0 и не буква */
-while (ageYears === null || isNaN(ageYears) || Number(ageYears) <= 0 || !isFinite(ageYears)) {
+/*проверка, что значение переменной не null, строка не пустая, не NaN, число больше или равно 0 и не буква */
+while (ageYears === null || ageYears.length < 1 || isNaN(ageYears) || Number(ageYears) < 0 || !isFinite(ageYears)) {
 	ageYears = prompt('Введите ваш возраст в годах');
 }
 
