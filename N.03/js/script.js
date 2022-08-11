@@ -1,25 +1,24 @@
 let lastName = prompt('Введите Вашу фамилию');
-let firstName = prompt('Введите Ваше имя');
-let patronymic = prompt('Введите Ваше отчество');
-let ageYears = prompt('Введите ваш возраст в годах');
-
 /*проверка, что значение переменной не null, длиннее 1 символа и не число*/
 while (lastName === null || lastName.length < 1 || isFinite(lastName)) {
 	lastName = prompt('Введите Вашу фамилию');
 }
 
+let firstName = prompt('Введите Ваше имя');
 /*проверка, что значение переменной не null, длиннее 1 символа и не число*/
 while (firstName === null || firstName.length < 1 || isFinite(firstName)) {
 	firstName = prompt('Введите Ваше имя');
 }
 
+let patronymic = prompt('Введите Ваше отчество');
 /*проверка, что значение переменной не null, длиннее 1 символа и не число*/
 while (patronymic === null || patronymic.length < 1 || isFinite(patronymic)) {
 	patronymic = prompt('Введите Ваше отчество');
 }
 
+let ageYears = prompt('Введите ваш возраст в годах');
 /*проверка, что значение переменной не null, не NaN, число больше 0 и не буква */
-while (isNaN(ageYears) || ageYears === null || Number(ageYears) < 0 || !isFinite(ageYears)) {
+while (ageYears === null || isNaN(ageYears) || Number(ageYears) <= 0 || !isFinite(ageYears)) {
 	ageYears = prompt('Введите ваш возраст в годах');
 }
 
