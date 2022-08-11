@@ -17,20 +17,31 @@ while (patronymic === null || patronymic.length < 1 || isFinite(patronymic)) {
 }
 
 let ageYears = prompt('Введите ваш возраст в годах');
-/*проверка, что значение переменной не null, строка не пустая, не NaN, число больше или равно 0 и не буква */
-while (ageYears === null || ageYears.length < 1 || isNaN(ageYears) || Number(ageYears) < 0 || !isFinite(ageYears)) {
+/*проверка, что значение переменной не null, строка не пустая, не NaN, число больше или равно 0 */
+while (ageYears === null || ageYears.length < 1 || isNaN(ageYears) || Number(ageYears) < 0) {
 	ageYears = prompt('Введите ваш возраст в годах');
 }
 
 let ageDays = Number(ageYears) * 365;
 let ageAfterFive = Number(ageYears) + 5;
-let gender = confirm('Ваш пол мужской?');
+let genderBool = confirm('Ваш пол мужской?');
+let genderString;
 
+genderBool ? genderString = 'мужской' : genderString = 'женский';
+
+let pension;
+
+(genderString == 'мужской') ? (ageYears >= 65 ? pension = 'да' : pension = 'нет') : (ageYears >= 61 ? pension = 'да' : pension = 'нет');
+
+alert(
+	`Ваше ФИО: ${lastName} ${firstName} ${patronymic} \nВаш возраст в годах: ${ageYears} \nВаш возраст в днях: ${ageDays} \nЧерез 5 лет вам будет: ${ageAfterFive} \nВаш пол: ${genderString} \nВы на пенсии: ${pension}`
+);
+
+
+
+/*
 gender ? gender = 'мужской' : gender = 'женский';
 
 let pension;
 (gender == 'мужской') ? (ageYears >= 65 ? pension = 'да' : pension = 'нет') : (ageYears >= 61 ? pension = 'да' : pension = 'нет');
-
-alert(
-	`Ваше ФИО: ${lastName} ${firstName} ${patronymic} \nВаш возраст в годах: ${ageYears} \nВаш возраст в днях: ${ageDays} \nЧерез 5 лет вам будет: ${ageAfterFive} \nВаш пол: ${gender} \nВы на пенсии: ${pension}`
-);
+*/
