@@ -24,24 +24,24 @@ while (ageYears === null || ageYears.length < 1 || isNaN(ageYears) || Number(age
 
 let ageDays = Number(ageYears) * 365;
 let ageAfterFive = Number(ageYears) + 5;
-let genderBool = confirm('Ваш пол мужской?');
-let genderString;
 
-genderBool ? genderString = 'мужской' : genderString = 'женский';
+let genderBool = confirm('Ваш пол мужской?');
+let maleBool;
+
+genderBool ? maleBool = true : maleBool = false;
+
+let genderString;
+maleBool == true ? genderString = 'Мужской' : genderString = 'Женский';
 
 let pension;
+let pensionMale;
+let pensionFemale;
+pensionMale = (ageYears >= 65) ? 'да' : 'нет';
+pensionFemale = (ageYears >= 61) ? 'да' : 'нет';
 
-(genderString == 'мужской') ? (ageYears >= 65 ? pension = 'да' : pension = 'нет') : (ageYears >= 61 ? pension = 'да' : pension = 'нет');
+pension = (maleBool == true) ? pensionMale : pensionFemale;
+
 
 alert(
 	`Ваше ФИО: ${lastName} ${firstName} ${patronymic} \nВаш возраст в годах: ${ageYears} \nВаш возраст в днях: ${ageDays} \nЧерез 5 лет вам будет: ${ageAfterFive} \nВаш пол: ${genderString} \nВы на пенсии: ${pension}`
 );
-
-
-
-/*
-gender ? gender = 'мужской' : gender = 'женский';
-
-let pension;
-(gender == 'мужской') ? (ageYears >= 65 ? pension = 'да' : pension = 'нет') : (ageYears >= 61 ? pension = 'да' : pension = 'нет');
-*/
