@@ -27,12 +27,9 @@ let ageDays = ageYears * 365;
 let ageAfterFive = ageYears + 5;
 
 let genderBool = confirm('Ваш пол мужской?');
-let maleBool;
-
-genderBool ? maleBool = true : maleBool = false;
 
 let genderString;
-genderString = (maleBool == true) ? 'Мужской' : 'Женский';
+genderString = (genderBool == true) ? 'Мужской' : 'Женский';
 
 let pension;
 let pensionMale;
@@ -40,7 +37,7 @@ let pensionFemale;
 pensionMale = (ageYears >= 65) ? 'да' : 'нет';
 pensionFemale = (ageYears >= 61) ? 'да' : 'нет';
 
-pension = (maleBool == true) ? pensionMale : pensionFemale;
+pension = (genderBool == true) ? pensionMale : pensionFemale;
 
 
 alert(
