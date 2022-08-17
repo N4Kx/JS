@@ -2,10 +2,9 @@ var userString = prompt('Введите строку:');
 
 console.log('Введёная строка: \n' + userString);
 
-userString = userString.toLowerCase();
-
 function vowels(str) {
 	console.time("время подсчета");
+	str = str.toLowerCase();
 	var searchedVowels = ["а", "о", "и", "е", "ё", "э", "ы", "у", "ю", "я"];
 	var count = 0;
 
