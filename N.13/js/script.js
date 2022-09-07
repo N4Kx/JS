@@ -8,13 +8,13 @@ function HashStorageFunc() {
 	}
 
 	self.getValue = function (key) {
-		return storage[key];
+		// return storage[key];
 
-		// if (key in storage) {    тут я предполагал, что нужно сделать проверку, хотя сам по себе запрос по несуществующему ключу возвращает undefined;
-		// 	return storage[key];
-		// } else {
-		// 	undefined;
-		// }
+		if (key in storage) {    //тут я предполагал, что нужно сделать проверку, хотя сам по себе запрос по несуществующему ключу возвращает undefined;
+			return storage[key];
+		} else {
+			undefined;
+		}
 	}
 
 	self.deleteValue = function (key) {
@@ -48,15 +48,26 @@ function input() {
 
 function output() {
 	let nameStr = prompt('Введите название напитка информацию о котором хотите получить');
-	let drinkArr = drinkStorage.getValue(nameStr);
-	console.log('Напиток: ' + nameStr + '\n'
-		+ 'Алкоголный: ' + drinkArr[0] + '\n'
-		+ 'Рецепт: ' + drinkArr[1]);
+
+	if (drinkStorage.getValue(nameStr) === undefined) {	// проверяем, есть ли напиток в хэше;
+		console.log('Напиток не найден');						// если его нет - выводим информацию, что такого напитка нет;
+	} else {																// если напиток есть - то выводим информацию о нем;
+		let drinkArr = drinkStorage.getValue(nameStr);
+
+		console.log('Напиток: ' + nameStr + '\n'
+			+ 'Алкоголный: ' + drinkArr[0] + '\n'
+			+ 'Рецепт: ' + drinkArr[1]);
+	}
+
+
 }
 
 function userDelete() {
 	let nameStr = prompt('Введите название напитка, который хотите удалить');
-	console.log(drinkStorage.deleteValue(nameStr));
+	if (drinkStorage.deleteValue(nameStr))		// удаляем напиток из хэша и выводим сообщение о проведённой операции;
+		console.log('Напиток удалён');
+	else
+		console.log('Напиток не найден');
 }
 
 function drinkUserAsk() {
