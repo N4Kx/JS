@@ -8,7 +8,7 @@ function HashStorageFunc() {
 	}
 
 	self.getValue = function (key) {
-		// return storage[key];
+		//  return storage[key];
 
 		if (key in storage) {    //тут я предполагал, что нужно сделать проверку, хотя сам по себе запрос по несуществующему ключу возвращает undefined;
 			return storage[key];
@@ -51,7 +51,7 @@ function output() {
 	let drinkArr = drinkStorage.getValue(nameStr);
 
 	if (drinkArr === undefined) {									// проверяем, есть ли напиток в хэше;
-		console.log('Напиток ' + nameStr + ' не найден');						// если его нет - выводим информацию, что такого напитка нет;
+		console.log('Напиток ' + nameStr + ' не найден');	// если его нет - выводим информацию, что такого напитка нет;
 	} else {																// если напиток есть - то выводим информацию о нем;
 		console.log('Напиток: ' + nameStr + '\n'
 			+ 'Алкоголный: ' + drinkArr[0] + '\n'
