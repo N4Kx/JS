@@ -48,26 +48,23 @@ function input() {
 
 function output() {
 	let nameStr = prompt('Введите название напитка информацию о котором хотите получить');
+	let drinkArr = drinkStorage.getValue(nameStr);
 
-	if (drinkStorage.getValue(nameStr) === undefined) {	// проверяем, есть ли напиток в хэше;
-		console.log('Напиток не найден');						// если его нет - выводим информацию, что такого напитка нет;
+	if (drinkArr === undefined) {									// проверяем, есть ли напиток в хэше;
+		console.log('Напиток ' + nameStr + ' не найден');						// если его нет - выводим информацию, что такого напитка нет;
 	} else {																// если напиток есть - то выводим информацию о нем;
-		let drinkArr = drinkStorage.getValue(nameStr);
-
 		console.log('Напиток: ' + nameStr + '\n'
 			+ 'Алкоголный: ' + drinkArr[0] + '\n'
 			+ 'Рецепт: ' + drinkArr[1]);
 	}
-
-
 }
 
 function userDelete() {
 	let nameStr = prompt('Введите название напитка, который хотите удалить');
 	if (drinkStorage.deleteValue(nameStr))		// удаляем напиток из хэша и выводим сообщение о проведённой операции;
-		console.log('Напиток удалён');
+		console.log('Напиток ' + nameStr + ' удалён');
 	else
-		console.log('Напиток не найден');
+		console.log('Напиток ' + nameStr + ' не найден');
 }
 
 function drinkUserAsk() {
