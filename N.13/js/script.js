@@ -35,10 +35,10 @@ var drinkStorage = new HashStorageFunc();
 
 function input() {
 	let nameStr = prompt('Введите название напитка');
-	let alcoStr = confirm('Ваш напиток алкоголный ?');
+	let alcoBool = confirm('Ваш напиток алкоголный ?');
 	let recStr = prompt('Введите рецепт приготовления вашего напитка');
 
-	if (alcoStr)
+	if (alcoBool)
 		alcoStr = 'да';
 	else
 		alcoStr = 'нет';
