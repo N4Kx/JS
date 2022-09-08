@@ -4,7 +4,10 @@ class HashStorageClass {
 		this[key] = value;
 	}
 	getValue(key) {
-		return this[key];
+		if (key in this)
+			return this[key];
+		else
+			return undefined;
 	}
 	deleteValue(key) {
 		if (key in this) {
