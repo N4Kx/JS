@@ -21,8 +21,6 @@ class HashStorageClass {
 	}
 	getKeys() {
 		return Object.keys(this.storage);
-		// return this;
-		// return this.storage;
 	}
 }
 
