@@ -29,13 +29,13 @@ function myTrim(str) {
 			}
 		}
 
-		for (let i = str.length - 1; ; i--) {
-			if (str[i] !== " ") {
-				endIndex = i;
-				break;
+		for (let i = str.length - 1; ; --i) {			// запускаем цикл с конца строки
+			if (str[i] !== " ") {							// как только встречаем символ отличный от пробела
+				endIndex = i;									// запоминаем его индекс
+				break;											// прерываем цикл
 			}
 		}
-		alert('%' + str.substring(startIndex, endIndex + 1) + '%');
+		alert('%' + str.substring(startIndex, endIndex + 1) + '%');				// обрезаем строку 
 	} else {
 		alert('Введённая строка пустая');
 	}
