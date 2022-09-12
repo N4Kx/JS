@@ -21,10 +21,9 @@ function myTrim(str) {
 	let endIndex = 0;
 
 	if (str.length > 0) {
-		// let funcStr = str;
 
-		for (let i = 0; i < str.length; i++) {	// запускаем цикл с начала строки
-			if (str[i] !== " ") {						// как только встречаем символ отличный от пробела
+		for (let i = 0; i < str.length; i++) {			// запускаем цикл с начала строки
+			if (str[i] !== " ") {							// как только встречаем символ отличный от пробела
 				startIndex = i;								// запоминаем его индекс
 				break;											// прерываем цикл
 			}
@@ -38,6 +37,6 @@ function myTrim(str) {
 		}
 		alert('%' + str.substring(startIndex, endIndex + 1) + '%');
 	} else {
-		alert('Веденная строка пустая');
+		alert('Введённая строка пустая');
 	}
 }
