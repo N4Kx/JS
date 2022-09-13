@@ -14,7 +14,7 @@
 
 let userStr = prompt('Введите строку: ');
 
-myTrim(userStr);
+alert('%' + myTrim(userStr) + '%');
 
 function myTrim(str) {
 	let startIndex = 0;
@@ -35,8 +35,8 @@ function myTrim(str) {
 				break;											// прерываем цикл
 			}
 		}
-		alert('%' + str.substring(startIndex, endIndex + 1) + '%');				// обрезаем строку 
+		return str.substring(startIndex, endIndex + 1);		// обрезаем строку и возвращаем её.
 	} else {
-		alert('Введённая строка пустая');
+		return '';
 	}
 }
