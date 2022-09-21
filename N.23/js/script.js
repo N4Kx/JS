@@ -27,6 +27,7 @@ var formDef2 =
 	];
 
 let frm = document.forms.testForm;												// находим форму с которой будем работать
+let frm2 = document.forms.testForm2;
 
 function buildForm(form, arr) {													// создаем функцию, которой в качестве аргументов передадим ссылку на форму и массив по которому будем изменять форму.
 	let elemFormLabel;
@@ -116,4 +117,4 @@ function buildForm(form, arr) {													// создаем функцию, к
 }
 
 buildForm(frm, formDef1);
-buildForm(frm, formDef2);
+buildForm(frm2, formDef2);
