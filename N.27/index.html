@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/style.css">
+	<title>HW6 N.27</title>
+	</title>
+
+</head>
+
+<body>
+	<form action="https://fe.it-academy.by/TestForm.php" class="fomr1" name="form1" id="form1" method="post" novalidate>
+		<label for="form1__developers" class="form1__label">Разработчики:</label>
+		<input type="text" name="form1__developers" id="form1__developers" class="form1__input">
+		<div class="form1__error form1__dev_error">Заполните пожалуйста поле "Разработчики"</div>
+
+		<label for="form1__sitename" class="form1__label">Название сайта:</label>
+		<input type="text" name="form1__sitename" id="form1__sitename" class="form1__input">
+		<div class="form1__error form1__sitename_error">Заполните пожалуйста поле "Название сайта"</div>
+
+		<label for="form1__siteurl" class="form1__label">URL сайта:</label>
+		<input type="text" name="form1__siteurl" id="form1__siteurl" class="form1__input">
+		<div class="form1__error form1__siteurl_error">Заполните пожалуйста поле "URL сайта"</div>
+
+		<label for="form1__start_date" class="form1__label">Дата запуска сайта:</label>
+		<input type="date" name="form1__start_date" id="form1__start_date" class="form1__input">
+		<div class="form1__error form1__date_error">Заполните пожалуйста поле "Дата запуска сайта"</div>
+
+		<label for="form1__visitors" class="form1__label">Посетителей в сутки:</label>
+		<input type="text" name="form1__visitors" id="form1__visitors" class="form1__input">
+		<div class="form1__error form1__visitors_error">Заполните пожалуйста поле "Посетителей в сутки"</div>
+
+		<label for="form1__email" class="form1__label">Е-mail для связи:</label>
+		<input type="text" name="form1__email" id="form1__email" class="form1__input">
+		<div class="form1__error form1__email_error">Заполните пожалуйста поле "Е-mail для связи"</div>
+
+		<label for="form1__category" class="form1__label">Рубрика каталога:</label>
+		<select name="form1__category" id="form1__category" class="form1__input">
+			<option value="1">Здоровье</option>
+			<option value="2">Домашний уют</option>
+			<option value="3">Бытовая техника</option>
+		</select>
+		<div class="form1__error form1__category_error">Извините поле "Рубрика каталога" не может быть "Бытовая техника"
+		</div>
+
+		<label class="form1__label">Размещение:</label>
+		<div class="accommodation__body">
+			<input type="radio" name="form1__accommodation" class="form1__accommodation" id="form1__accommodation1"
+				value="1"><label for="form1__accommodation1" class="form1__radio_label"
+				id="form1__raio_label1">бесплатное</label>
+			<input type="radio" name="form1__accommodation" class="form1__accommodation" id="form1__accommodation2"
+				value="2"><label for="form1__accommodation2" class="form1__radio_label"
+				id="form1__raio_label2">платное</label>
+			<input type="radio" name="form1__accommodation" class="form1__accommodation" id="form1__accommodation3"
+				value="3"><label for="form1__accommodation3" class="form1__radio_label" id="form1__raio_label3">VIP</label>
+		</div>
+		<div class="form1__error form1__accommodation_error">Заполните пожалуйста поле "Размещение"</div>
+
+		<label for="form1__allow" class="form1__label form1__allow">Разрешить отзывы</label><input type="checkbox"
+			name="form1__allow" id="form1__allow">
+		<div class="form1__error form1__allow_error">Заполните пожалуйста поле "Разрешить отзывы"</div>
+
+
+		<label for="form1__description" class="form1__label form1__label_description">Описание сайта:</label> <textarea
+			name="form1__description" class="form1__description" id="form1__description"></textarea>
+		<div class="form1__error form1__description_error">Заполните пожалуйста поле "Описание сайта"</div>
+
+	</form>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<input type="submit" value="Опубликовать" form="form1">
+	<div class="form1__error form1__submit_error">Validation error</div>
+
+	<script src="js/script.js"></script>
+</body>
+
+</html>
