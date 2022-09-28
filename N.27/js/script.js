@@ -42,14 +42,14 @@ emailField.addEventListener('blur', validateFormEmail, false);				// подпи�
 const categoryField = formTag.elements.form1__category;						// находим поле формы "Рубрика каталога"
 categoryField.addEventListener('blur', validateFormSelect, false);		// подписываемся на обработчик событий по потере фокуса в поле формы "Рубрика каталога"
 
-const accField = formTag.querySelector('.accommodation__body');			// находим div-обёртку поля формы "размещение"
-accField.addEventListener('mouseleave', validateFormAcc, false);			// подписываемся на обработчик собыйтий по событию покидание мыши из поля формы "Размещение"
+const accField = formTag.elements.form1__accommodation;						// находим div-обёртку поля формы "размещение"
+accField.addEventListener('blur', validateFormAcc, false);					// подписываемся на обработчик собыйтий по потере фокуса в поле формы "Размещение"
 
 const allowField = formTag.elements.form1__allow;								// находим поле формы "Разрешить отзывы"
-allowField.addEventListener('mouseleave', validateFormAllow, false);		// подписываемся на обработчик событий по событию mouseleave из поля формы "Разрешить отзывы"
+allowField.addEventListener('blur', validateFormAllow, false);				// подписываемся на обработчик событий по потере фокуса в поле формы "Разрешить отзывы"
 
 const descriptionField = formTag.elements.form1__description;
-descriptionField.addEventListener('mouseleave', validateFormDescription, false);
+descriptionField.addEventListener('blur', validateFormDescription, false);
 
 
 function validateFormDev(eo) {														// описание функции проверяющей поле формы "разработчики"
@@ -154,7 +154,7 @@ function validateFormSelect(eo) {														// описание функци�
 	const categoryFieldValue = categoryField.value;
 	const categoryAlertElem = formTag.querySelector('.form1__category_error');
 
-	if (categoryFieldValue == 3) {
+	if (categoryFieldValue == 1) {
 		categoryAlertElem.classList.add('error_visible');
 	} else {
 		categoryAlertElem.classList.remove('error_visible');
@@ -169,15 +169,10 @@ function validateFormAcc(eo) {															// описание функции 
 	const accomodatinFieldValue = accommodationField.value;
 	const accommodationAlertElem = formTag.querySelector('.form1__accommodation_error');
 
-	try {
-		if (accomodatinFieldValue == '') {
-			accommodationAlertElem.classList.add('error_visible');
-		} else {
-			accommodationAlertElem.classList.remove('error_visible');
-		}
-	}
-	catch (ex) {
-		alert('Ой! Что-то пошло не так c РАЗМЕЩЕНИЕМ');
+	if (accomodatinFieldValue == '') {
+		accommodationAlertElem.classList.add('error_visible');
+	} else {
+		accommodationAlertElem.classList.remove('error_visible');
 	}
 }
 
@@ -288,7 +283,7 @@ function validateFormSubmit(eo) {
 			accommodationAlertElem.classList.remove('error_visible');
 		}
 
-		if (categoryFieldValue == 3) {
+		if (categoryFieldValue == 1) {
 			categoryAlertElem.classList.add('error_visible');
 			categoryField.focus();
 			eo.preventDefault();
