@@ -40,13 +40,13 @@ const emailField = formTag.elements.form1__email;								// помещаем в 
 emailField.addEventListener('blur', validateFormEmail, false);				// подписываемся на обработчик событий по потере фокуса в поле формы "email для связи"
 
 const categoryField = formTag.elements.form1__category;						// находим поле формы "Рубрика каталога"
-categoryField.addEventListener('blur', validateFormSelect, false);		// подписываемся на обработчик событий по потере фокуса в поле формы "Рубрика каталога"
+categoryField.addEventListener('change', validateFormSelect, false);		// подписываемся на обработчик событий по потере фокуса в поле формы "Рубрика каталога"
 
 const accField = formTag.elements.form1__accommodation;						// находим коллекцию радиокнопок
-accField.forEach((item) => item.addEventListener('blur', validateFormAcc, false));	// каждому элементу радиокнопки вешаем обработчик событий по потере фокуса из радиокнопки
+accField.forEach((item) => item.addEventListener('change', validateFormAcc, false));	// каждому элементу радиокнопки вешаем обработчик событий по потере фокуса из радиокнопки
 
 const allowField = formTag.elements.form1__allow;								// находим поле формы "Разрешить отзывы"
-allowField.addEventListener('blur', validateFormAllow, false);				// подписываемся на обработчик событий по потере фокуса в поле формы "Разрешить отзывы"
+allowField.addEventListener('change', validateFormAllow, false);			// подписываемся на обработчик событий по потере фокуса в поле формы "Разрешить отзывы"
 
 const descriptionField = formTag.elements.form1__description;
 descriptionField.addEventListener('blur', validateFormDescription, false);
