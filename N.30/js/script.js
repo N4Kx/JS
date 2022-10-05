@@ -69,14 +69,13 @@ function stopDrag(eo) {
 
 function dragOver(eo) {
 	eo = eo || window.event;
-	if (eo.target !== document.body) {
-		if (elemDragged) {		// проверяем существует ли перетаскиваемый элемент
-			let dragCoordX = eo.screenX;
-			let dragCoordY = eo.screenY;
 
-			elemDragged.style.left = dragCoordX - startDragHash['x0'] + startDragHash['x1'] + 'px';		// вычисляем координаты элемента по оси X
-			elemDragged.style.top = dragCoordY - startDragHash['y0'] + startDragHash['y1'] + 'px';		// вычисляем координаты элемента по оси Y
-		}
+	if (elemDragged) {		// проверяем существует ли перетаскиваемый элемент
+		let dragCoordX = eo.screenX;
+		let dragCoordY = eo.screenY;
+
+		elemDragged.style.left = dragCoordX - startDragHash['x0'] + startDragHash['x1'] + 'px';		// вычисляем координаты элемента по оси X
+		elemDragged.style.top = dragCoordY - startDragHash['y0'] + startDragHash['y1'] + 'px';		// вычисляем координаты элемента по оси Y
 	}
 	// console.log(dragCoordX + ' ' + dragCoordY);
 }
