@@ -29,7 +29,7 @@ function startDrag(eo) {
 	eo.preventDefault();
 	// console.log(eo.target);
 
-	if (eo.target !== document.body) {
+	if (eo.target !== document.body) {			// добавил во все события такую проверку, чтобы не цеплялся body
 
 		let startDragCoordX = eo.screenX;		// запоминаем координаты курсора по оси X начала перетаскивания
 		let startDragCoordY = eo.screenY;		// запоминаем координаты курсора по оси Y начала перетаскивания
