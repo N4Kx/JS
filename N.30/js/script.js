@@ -7,8 +7,6 @@ const elems = document.body.getElementsByTagName('img');
 
 window.addEventListener('mousedown', startDrag, false);
 window.addEventListener('mouseup', stopDrag, false);
-window.addEventListener('mousemove', dragOver, false);
-
 
 // на каждую картинку циклом вешаем обработчики мышиных событий
 /*
@@ -22,6 +20,7 @@ for (let i = 0; i < elems.length; i++) {
 
 let startDragHash = {};	// объявляем переменную со ссылкой на объект для хранения координат начала перетаскивания
 let elemDragged;
+let elemStartCoordZ = 0;	// объявляем переменную для хранения значения по оси Z
 
 // описываем функцию по нажатию кнопки мыши
 function startDrag(eo) {
@@ -30,7 +29,7 @@ function startDrag(eo) {
 	// console.log(eo.target);
 
 	if (eo.target !== document.body) {			// добавил во все события такую проверку, чтобы не цеплялся body
-
+		window.addEventListener('mousemove', dragOver, false);	// добавляем обработчик событий по движению мыши
 		let startDragCoordX = eo.screenX;		// запоминаем координаты курсора по оси X начала перетаскивания
 		let startDragCoordY = eo.screenY;		// запоминаем координаты курсора по оси Y начала перетаскивания
 
@@ -39,13 +38,16 @@ function startDrag(eo) {
 		let elemStartCoordX = elemDragged.offsetLeft;
 		let elemStartCoordY = elemDragged.offsetTop;
 
+
 		startDragHash['x0'] = startDragCoordX;	// записываем в объект координату курсора по оси X
 		startDragHash['y0'] = startDragCoordY;	// записываем в объект координату курсора по оси Y
 		startDragHash['obj'] = elemDragged;		// записываем в объект ссылку на элемент, который мы перетаскиваем
 		startDragHash['x1'] = elemStartCoordX;	// записываем координату верхнего левого угла перетаскиваемого элемента по оси X
 		startDragHash['y1'] = elemStartCoordY;	// записываем координату верхнего левого угла перетаскиваемого элемента по оси Y
+		elemStartCoordZ += 1;	// при каждом нажатии увеличиваем на 1
+		startDragHash['z0'] = elemStartCoordZ;	// записываем координату по оси Z в объект
 
-		startDragHash['obj'].style.zIndex = '1000';		// устанавливаем перетаскиваемому элементу z-index = 1000, мне так захотелось 
+		startDragHash['obj'].style.zIndex = startDragHash['z0'];		// устанавливаем перетаскиваемому элементу z-index = увеличенный на 1
 		startDragHash['obj'].style.cursor = 'move';		// устанавливаем перетаскиваемому элементу внешний вид курсора
 
 		// console.log('Координаты курсора в начале перетаскивания:');
@@ -61,9 +63,10 @@ function stopDrag(eo) {
 	eo.preventDefault();
 	if (eo.target !== document.body) {
 		// console.log('Кнопка мыши ОТПУЩЕНА!');
-		elemDragged.style.zIndex = '0';
+		// elemDragged.style.zIndex = '0';
 		elemDragged.style.cursor = 'default';
 		elemDragged = null;
+		window.removeEventListener('mousemove', dragOver, false);	// удаляем обработчик событий по движению мыши
 	}
 }
 
