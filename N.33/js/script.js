@@ -37,7 +37,7 @@ function getClockSize(eo) {
 
 		for (let i = hours; i > 0; i--, angle -= 30) {
 			// создаем кружочки на часах
-			console.log('================== № ' + i);
+			// console.log('================== № ' + i);
 			let hourBG = document.createElement('div');	// создаем div для зелёного кружочка и № часа
 			const angleDegStep = Math.round(360 / hours);
 
@@ -87,9 +87,6 @@ function pos(elem, angDeg, body) {
 
 	const innerCenterX = bodyCenterX + radius * Math.sin(angle);
 	const innerCenterY = bodyCenterY - radius * Math.cos(angle);
-
-	console.log('Центр кружка по X: ' + innerCenterX);
-	console.log('Центр кружка по Y: ' + innerCenterY);
 
 	elem.style.left = Math.round(innerCenterX - elem.offsetWidth / 2) + 'px';
 	elem.style.top = Math.round(innerCenterY - elem.offsetHeight / 2) + 'px';
