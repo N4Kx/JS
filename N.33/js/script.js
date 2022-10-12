@@ -16,6 +16,19 @@ let numberBGColor = '#48B585';  // цвет кружочка под числом
 
 let hours = 12; // переменная - количество часов
 
+let transformOriginValue; // объявляем переменную для значения свойства transformOrigin для секундной стрелки
+let arrowPosShift; // объявляем переменную для сдвига стрелки при позиционировании
+let ArrowShift; // задаем контсанту для сдвига положения стрелки и оси вращения стрелки
+
+const secArrowAngleStep = 360 / 60; // вычисляем шаг секундной стрелки
+let secArrowLength;	// объявляем переменную для длинны секундной стрелки
+
+const minArrowAngleStep = 360 / 60;	// вычисляем шаг минутной стрелки
+let minArrowLength;	// объявляем переменную для длины минутной стрелки
+
+const hourArrowAngleStep = 360 / 12;	// изменить для часа 30/60;
+const hourArrowAngleStepForMin = 30 / 60;
+let hourArrowLength;
 
 clockBtn.addEventListener('click', getClockSize, false);
 
@@ -75,12 +88,16 @@ function getClockSize(eo) {
 		clockNum.style.fontStyle = 'italic';
 		clockNum.style.fontFamily = 'sans-serif';
 
+		updateTime();	// однократно вызываем функцию, чтобы записать текущее значение времени
+		setInterval(updateTime, 1000);	// добавляем таймер вызова функции, для обновления текущего времени
+
+		/* или вот такая конструкция тоже сработала
 		do updateTime();
 		while (clockNum.innerHTML == '');
 
-		if (clockNum.innerHTML !== '')
-			setInterval(updateTime, 1000);
-
+		if (clockNum.innerHTML !== '');
+		setInterval(updateTime, 1000);
+		*/
 
 		function updateTime() {
 			const currTime = new Date();
@@ -89,16 +106,107 @@ function getClockSize(eo) {
 			console.log(currTimeStr);
 		}
 
-
-
-
 		clock.prepend(clockNum);
 
+		pos(clockNum, clock, angle, clockNumDistance);	// позиционируем цифровые часы
+
+		// ====================================== создаем секундную стрелку
+		const secArrow = document.createElement('div');
+		secArrowLength = clockRad;	// вычисляем длину секундной стрелки
+		ArrowShift = secArrowLength / 20;
+
+		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
+
+		secArrow.style.width = '2px';
+		secArrow.style.height = secArrowLength + 'px';
+		secArrow.style.backgroundColor = 'black';
+		secArrow.style.borderRadius = '2px';
+		secArrow.style.position = 'fixed';
+		secArrow.style.transformOrigin = transformOriginValue;	// стандартно точка вращения в середине элемента
+		secArrow.style.zIndex = 100;
+
+		arrowPosShift = secArrowLength / 2 + ArrowShift;	// вычисляем сдвиг секундной стрелки для позиционирования
+
+		function setSecAngle() {	// функция вычисляет и задает угол положения секундной стрелки
+			const currTime = new Date();
+			const currTimeSec = currTime.getSeconds();
+			secArrow.style.transform = 'rotate(' + (currTimeSec * secArrowAngleStep) + 'deg)';
+			// return currTimeSec;
+		}
+		setInterval(setSecAngle, 1000);
+		setSecAngle();
+
+		clock.prepend(secArrow);
+
+		pos(secArrow, clock, angle, arrowPosShift);	// позиционируем стрелку
 
 
-		pos(clockNum, clock, angle, clockNumDistance);
+		// ====================================== создаем минутную стрелку
+		const minArrow = document.createElement('div');
+		minArrowLength = clockRad * 0.8; // вычисляем длину минутной стрелки
+
+		ArrowShift = minArrowLength / 3.2;
+
+		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
+
+		arrowPosShift = minArrowLength / 2 + ArrowShift;
+		minArrow.style.width = '5px';
+		minArrow.style.height = minArrowLength + 'px';
+		minArrow.style.backgroundColor = 'red';
+		minArrow.style.borderRadius = '2px';
+		minArrow.style.position = 'fixed';
+		minArrow.style.transformOrigin = transformOriginValue;
+		minArrow.style.zIndex = 75;
 
 
+		function getMinAngle() {
+			const currTime = new Date();
+			const currTimeMin = currTime.getMinutes();
+			minArrow.style.transform = 'rotate(' + (currTimeMin * minArrowAngleStep) + 'deg';
+			// return currTimeMin;
+		}
+
+		getMinAngle();
+		setInterval(getMinAngle, 1000);
+
+		clock.prepend(minArrow);
+
+		pos(minArrow, clock, angle, arrowPosShift);
+
+		// ====================================== создаем часовую стрелку
+		const hourArrow = document.createElement('div');
+		hourArrowLength = clockRad * 0.5; // вычисляем длину минутной стрелки
+
+		ArrowShift = hourArrowLength + hourArrowLength / 10;
+
+		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
+
+		arrowPosShift = hourArrowLength / 2 + ArrowShift;
+		hourArrow.style.width = '10px';
+		hourArrow.style.height = hourArrowLength + 'px';
+		hourArrow.style.backgroundColor = 'green';
+		hourArrow.style.borderRadius = '5px';
+		hourArrow.style.position = 'fixed';
+		hourArrow.style.transformOrigin = transformOriginValue;
+		hourArrow.style.zIndex = 50;
+
+
+		function getHourAngle() {
+			const currTime = new Date();
+			const currTimeHour = currTime.getHours();
+			const currTimeMin = currTime.getMinutes();
+			hourArrow.style.transform = 'rotate(' + (currTimeHour * hourArrowAngleStep + currTimeMin * hourArrowAngleStepForMin) + 'deg';	// пересчитать угол для часа
+			// return currTimeMin;
+		}
+
+		getHourAngle();
+		setInterval(getHourAngle, 1000);
+
+
+
+		clock.prepend(hourArrow);
+
+		pos(hourArrow, clock, angle, arrowPosShift);
 
 		bodyElem.querySelector('label').remove();	// удаляем label
 		clockSizeElem.remove();	// Удаляем поле ввода размера часов
@@ -134,11 +242,8 @@ function pos(elem, body, angDeg, distance) {
 	elem.style.top = Math.round(innerCenterY - elem.offsetHeight / 2) + 'px';
 }
 
-// форматирует дату-время в формате дд.мм.гггг чч:мм:сс
+// форматирует дату-время в формате чч:мм:сс
 function formatDateTime(dt) {
-	const year = dt.getFullYear();
-	const month = dt.getMonth() + 1;
-	const day = dt.getDate();
 	const hours = dt.getHours();
 	const minutes = dt.getMinutes();
 	const seconds = dt.getSeconds();
