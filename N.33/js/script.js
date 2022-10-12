@@ -152,8 +152,8 @@ function getClockSize(eo) {
 		arrowPosShift = minArrowLength / 2 + ArrowShift;
 		minArrow.style.width = '5px';
 		minArrow.style.height = minArrowLength + 'px';
-		minArrow.style.backgroundColor = 'red';
-		minArrow.style.borderRadius = '2px';
+		minArrow.style.backgroundColor = 'black';
+		minArrow.style.borderRadius = '3px';
 		minArrow.style.position = 'fixed';
 		minArrow.style.transformOrigin = transformOriginValue;
 		minArrow.style.zIndex = 75;
@@ -184,7 +184,7 @@ function getClockSize(eo) {
 		arrowPosShift = hourArrowLength / 2 + ArrowShift;
 		hourArrow.style.width = '10px';
 		hourArrow.style.height = hourArrowLength + 'px';
-		hourArrow.style.backgroundColor = 'green';
+		hourArrow.style.backgroundColor = 'black';
 		hourArrow.style.borderRadius = '5px';
 		hourArrow.style.position = 'fixed';
 		hourArrow.style.transformOrigin = transformOriginValue;
