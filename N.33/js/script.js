@@ -9,8 +9,8 @@ const clockBGColor = '#FCCB6E';	// цвет основы циферблата
 let clockRad;	// объявляем переменную для хранения радиуса часов
 let circle = '50%';
 
-let clockNumFontSize;
-let clockNumDistance;
+let clockNumFontSize;	// переменная для задания размера шрифтов в часах (в кружочках)
+let clockNumDistance;	// переменная для задания удаленности элемента от края родительского элемента
 
 let numberBGColor = '#48B585';  // цвет кружочка под числом
 
@@ -20,17 +20,32 @@ let transformOriginValue; // объявляем переменную для зн
 let arrowPosShift; // объявляем переменную для сдвига стрелки при позиционировании
 let ArrowShift; // задаем контсанту для сдвига положения стрелки и оси вращения стрелки
 
+const secArrowWidth = 3;	// задаем ширину секундной стрелки
+const secArrowBR = 2;	// задаем радиус скругления секундной стрелки
+const secZI = 4;	// задаем Z-Index для секундной стрелки
 const secArrowAngleStep = 360 / 60; // вычисляем шаг секундной стрелки
 let secArrowLength;	// объявляем переменную для длинны секундной стрелки
 
+
+const minArrowWidth = 5;	// задаем ширину минутной стрелки
+const minArrowBR = 3;	// задаем радиус скругления секундной стрелки
+const minZI = 3;	// задаём Z-Index для минутной стрелки
 const minArrowAngleStep = 360 / 60;	// вычисляем шаг минутной стрелки
 let minArrowLength;	// объявляем переменную для длины минутной стрелки
 
+
+const hourArrowWidth = 10;	//задаем ширину часовой стрелки
+const hourArrowBR = 5;	// задаем радиус скругления часовой стрелки
+const hourZI = 2;	// задаем Z-Index для часовой стрелки
 const hourArrowAngleStep = 360 / 12;	// изменить для часа 30/60;
 const hourArrowAngleStepForMin = 30 / 60;
 let hourArrowLength;
 
+
 clockBtn.addEventListener('click', getClockSize, false);
+
+
+
 
 function getClockSize(eo) {
 	eo = eo || window.event;
@@ -47,8 +62,7 @@ function getClockSize(eo) {
 		clock.style.backgroundColor = clockBGColor;	// задаём цвет основы циферблата часов
 		clock.style.borderRadius = circle;	// из прямоугольного div делаем круг
 		clock.style.position = 'fixed';
-		// clock.style.top = '300px';
-		// clock.style.left = '300px';
+
 		bodyElem.prepend(clock);	// помещаем div-часы в начало body
 
 		// ====================================== создаем циферблат (зелёные кружочки с номером часа)
@@ -117,13 +131,13 @@ function getClockSize(eo) {
 
 		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
 
-		secArrow.style.width = '2px';
+		secArrow.style.width = secArrowWidth + 'px';
 		secArrow.style.height = secArrowLength + 'px';
 		secArrow.style.backgroundColor = 'black';
-		secArrow.style.borderRadius = '2px';
+		secArrow.style.borderRadius = secArrowBR + 'px';
 		secArrow.style.position = 'fixed';
 		secArrow.style.transformOrigin = transformOriginValue;	// стандартно точка вращения в середине элемента
-		secArrow.style.zIndex = 100;
+		secArrow.style.zIndex = secZI;	// задаем z-Index для секундной стрелки
 
 		arrowPosShift = secArrowLength / 2 + ArrowShift;	// вычисляем сдвиг секундной стрелки для позиционирования
 
@@ -131,7 +145,6 @@ function getClockSize(eo) {
 			const currTime = new Date();
 			const currTimeSec = currTime.getSeconds();
 			secArrow.style.transform = 'rotate(' + (currTimeSec * secArrowAngleStep) + 'deg)';
-			// return currTimeSec;
 		}
 		setInterval(setSecAngle, 1000);
 		setSecAngle();
@@ -150,20 +163,19 @@ function getClockSize(eo) {
 		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
 
 		arrowPosShift = minArrowLength / 2 + ArrowShift;
-		minArrow.style.width = '5px';
+		minArrow.style.width = minArrowWidth + 'px';
 		minArrow.style.height = minArrowLength + 'px';
 		minArrow.style.backgroundColor = 'black';
-		minArrow.style.borderRadius = '3px';
+		minArrow.style.borderRadius = minArrowBR + 'px';
 		minArrow.style.position = 'fixed';
 		minArrow.style.transformOrigin = transformOriginValue;
-		minArrow.style.zIndex = 75;
+		minArrow.style.zIndex = minZI;	// задаем Z-Index для минутной стрелки
 
 
 		function getMinAngle() {
 			const currTime = new Date();
 			const currTimeMin = currTime.getMinutes();
 			minArrow.style.transform = 'rotate(' + (currTimeMin * minArrowAngleStep) + 'deg';
-			// return currTimeMin;
 		}
 
 		getMinAngle();
@@ -179,24 +191,23 @@ function getClockSize(eo) {
 
 		ArrowShift = hourArrowLength + hourArrowLength / 10;
 
-		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px'; // вычисляем смещение оси вращения стрелки, т.к. элемент сдвинут вниз на 10 пикселей, то смещение вверх на 10 пикселей.
+		transformOriginValue = '0px ' + (clockRad - ArrowShift) + 'px ' + '0px';
 
 		arrowPosShift = hourArrowLength / 2 + ArrowShift;
-		hourArrow.style.width = '10px';
+		hourArrow.style.width = hourArrowWidth + 'px';
 		hourArrow.style.height = hourArrowLength + 'px';
 		hourArrow.style.backgroundColor = 'black';
-		hourArrow.style.borderRadius = '5px';
+		hourArrow.style.borderRadius = hourArrowBR + 'px';
 		hourArrow.style.position = 'fixed';
 		hourArrow.style.transformOrigin = transformOriginValue;
-		hourArrow.style.zIndex = 50;
+		hourArrow.style.zIndex = hourZI;
 
 
 		function getHourAngle() {
 			const currTime = new Date();
 			const currTimeHour = currTime.getHours();
 			const currTimeMin = currTime.getMinutes();
-			hourArrow.style.transform = 'rotate(' + (currTimeHour * hourArrowAngleStep + currTimeMin * hourArrowAngleStepForMin) + 'deg';	// пересчитать угол для часа
-			// return currTimeMin;
+			hourArrow.style.transform = 'rotate(' + (currTimeHour * hourArrowAngleStep + currTimeMin * hourArrowAngleStepForMin) + 'deg';
 		}
 
 		getHourAngle();
