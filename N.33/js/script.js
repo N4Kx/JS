@@ -23,15 +23,14 @@ function getClockSize(eo) {
 		clockBtn.removeEventListener('click', getClockSize, false);		// удаляем обработчик событий
 
 		// создаем часы
-
 		let clock = document.createElement('div');	// создаем Div - который будет часами
 		clock.style.width = clockSize + 'px';	// задаём ширину блока
 		clock.style.height = clockSize + 'px';	// задаём высоту блока
 		clock.style.backgroundColor = clockBGColor;	// задаём цвет основы циферблата часов
 		clock.style.borderRadius = circle;	// из прямоугольного div делаем круг
-		clock.style.position = 'relative';
-		clock.style.top = '100px';
-		clock.style.left = '100px';
+		clock.style.position = 'fixed';
+		// clock.style.top = '300px';
+		// clock.style.left = '300px';
 		bodyElem.prepend(clock);	// помещаем div-часы в начало body
 
 		let angle = 0;	// задаем начальный угол для первого элемента в цикле
@@ -46,22 +45,17 @@ function getClockSize(eo) {
 			numberSize = clockRad / 5;	// вычисляем диаметр кружочка часов
 			hourBG.style.width = numberSize + 'px';
 			hourBG.style.height = numberSize + 'px';
-			// hourBG.style.borderRadius = circle;
+			hourBG.style.borderRadius = circle;
 			hourBG.style.display = 'flex';
 			hourBG.style.flexWrap = 'nowrap';
 			hourBG.style.alignItems = 'center';
 			hourBG.style.justifyContent = 'center';
-			hourBG.style.position = 'absolute';
+			hourBG.style.position = 'fixed';
 			hourBG.innerHTML = i;
-			0
-			// console.log('Угол до кружочка: ' + angle);
-
-
 
 			clock.prepend(hourBG);
 
 			pos(hourBG, angle, clock);
-			// console.log('Угол: ' + angle);
 		}
 
 
@@ -79,22 +73,23 @@ function getClockSize(eo) {
 	return clockSize;
 }
 
-function pos(elem, angDeg, body) {	// аргумент - угол в градусах
-	const radius = body.offsetWidth / 2 - elem.offsetWidth;		// вычисляется правильно, проверил
+function pos(elem, angDeg, body) {
+	// функция получает родительский элемент body относительно которого вычисляются координаты
+	// элемента elem с учётом угла angDeg и elem задаются координаты в стилевые свойства
+
+	// аргументы elem - элемент, которому нужно вычислить координаты,
+	//  angDeg - угол в градусах, body - родительский элемент для elem
+	const radius = body.offsetWidth / 2 - elem.offsetWidth;
 	const angle = angDeg / 180 * Math.PI; // переводим угол в градусах в радианы
 
-	const bodyCenterX = body.offsetLeft + body.offsetWidth / 2;	// вычисляется правильно, проверил
-	const bodyCenterY = body.offsetTop + body.offsetHeight / 2;	// вычисляется правильно, проверил
-	// console.log('Центр часов по Х: ' + bodyCenterX);
-	// console.log('Центр часов по Y: ' + bodyCenterY);
+	const bodyCenterX = body.offsetLeft + body.offsetWidth / 2;
+	const bodyCenterY = body.offsetTop + body.offsetHeight / 2;
 
 	const innerCenterX = bodyCenterX + radius * Math.sin(angle);
 	const innerCenterY = bodyCenterY - radius * Math.cos(angle);
-	// console.log('Радиус в функции: ' + radius);
 
 	console.log('Центр кружка по X: ' + innerCenterX);
 	console.log('Центр кружка по Y: ' + innerCenterY);
-
 
 	elem.style.left = Math.round(innerCenterX - elem.offsetWidth / 2) + 'px';
 	elem.style.top = Math.round(innerCenterY - elem.offsetHeight / 2) + 'px';
