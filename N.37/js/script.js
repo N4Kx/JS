@@ -84,6 +84,8 @@ function getClockSize(eo) {
 		const secArrowLength = clockRad * 0.95;		// длина секундной стрелки
 		const secArrowthickness = 2;		// толщина секундной стрелки
 
+		const arrowOffset = clockRad * 0.05;	// смещение стрелок от оси вращения
+
 		const digitalClockDistance = clockRad * 0.32;	// смещение цифровых часов по оси Y
 		const digitalClockFontSize = clockRad * 0.2;		// задаем размер шрифта цифровым часам
 
@@ -106,9 +108,9 @@ function getClockSize(eo) {
 			while (clockSvgBody.querySelector('line')) {
 				clockSvgBody.querySelector('line').remove();
 			}
-			buildArrow(clockSvgBody, hourArrowLength, hourAngle, hourAnglethickness, arrowColor, clockCenterX, clockCenterY);
-			buildArrow(clockSvgBody, minArrowLength, minArrowAngle, minArrowthickness, arrowColor, clockCenterX, clockCenterY);
-			buildArrow(clockSvgBody, secArrowLength, secArrowAngle, secArrowthickness, arrowColor, clockCenterX, clockCenterY);
+			buildArrow(clockSvgBody, hourArrowLength, hourAngle, hourAnglethickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
+			buildArrow(clockSvgBody, minArrowLength, minArrowAngle, minArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
+			buildArrow(clockSvgBody, secArrowLength, secArrowAngle, secArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
 
 			while (clockSvgBody.querySelector('#DIGITAL_CLOCK')) {
 				clockSvgBody.querySelector('#DIGITAL_CLOCK').remove();
@@ -140,14 +142,17 @@ function getClockSize(eo) {
 // строит и позиционирует стрелки в родительском элементе body с длинной стрелки length, под углом наклона
 // стрелки angle, толщиной стрелки thickness, цветом стрелки color, и начальными координатами стрелки x1 и y1
 
-function buildArrow(body, length, angle, thickness, color, x1, y1) {
+function buildArrow(body, length, angle, thickness, color, x1, y1, offset) {
+	const startX = x1 - offset * Math.sin(angle);
+	const startY = y1 + offset * Math.cos(angle);
+
 	const arrowX = x1 + length * Math.sin(angle);
 	const arrowY = y1 - length * Math.cos(angle);
 
 	const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 
-	arrow.setAttribute('x1', x1);
-	arrow.setAttribute('y1', y1);
+	arrow.setAttribute('x1', startX);
+	arrow.setAttribute('y1', startY);
 	arrow.setAttribute('x2', arrowX);
 	arrow.setAttribute('y2', arrowY);
 	arrow.setAttribute('stroke', color);
