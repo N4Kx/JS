@@ -75,15 +75,12 @@ function getClockSize(eo) {
 
 		//===============================================================================================
 		// создаем константы для построения стрелок и цифровых часов
-		const hourArrow = 'hour-arrow';	// задаем ID для часовой стрелки
 		const hourArrowLength = clockRad * 0.5;	// длина часовой стрелки
 		const hourAnglethickness = 20;		// толщина часовой стрелки
 
-		const minArrow = 'min-arrow';	// задаем ID для минутной стрелки
 		const minArrowLength = clockRad * 0.8;		// длина минутной стрелки
 		const minArrowthickness = 8;		// толщина минутной стрелки
 
-		const secArrow = 'sec-arrow';	// задаем ID для секундной стрелки
 		const secArrowLength = clockRad * 0.95;		// длина секундной стрелки
 		const secArrowthickness = 2;		// толщина секундной стрелки
 
@@ -91,18 +88,6 @@ function getClockSize(eo) {
 
 		const digitalClockDistance = clockRad * 0.32;	// смещение цифровых часов по оси Y
 		const digitalClockFontSize = clockRad * 0.2;		// задаем размер шрифта цифровым часам
-
-		buildArrow(clockSvgBody, hourArrowLength, hourAnglethickness, arrowColor, clockCenterX, clockCenterY, arrowOffset, hourArrow);	// создаем часовую стрелку
-		buildArrow(clockSvgBody, minArrowLength, minArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset, minArrow);	// создаем минутную стрелку
-		buildArrow(clockSvgBody, secArrowLength, secArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset, secArrow);	// создаем секундную стрелку
-
-		buildDigitelClock(clockSvgBody, digitalClockDistance, digitalClockFontSize, clockCenterX, clockCenterY);
-
-		const hourArrowElem = document.querySelector('#hour-arrow');	// находим часовую стрелку
-		const minArrowElem = document.querySelector('#min-arrow');		// находим минутную стрелку
-		const secArrowElem = document.querySelector('#sec-arrow');		// находим секундную стрелку
-
-		const digitalClockElem = document.querySelector('#DIGITAL_CLOCK');	// находим текстовый элемент для цифровых часов
 
 		//===============================================================================================
 		// создаем функцию, обновляющую часы (стрелки, цифры)
@@ -120,18 +105,24 @@ function getClockSize(eo) {
 			const minArrowAngle = 2 * Math.PI / 60 * currMin;
 			const secArrowAngle = 2 * Math.PI / 60 * currSec;
 
-			rotateArrow(hourArrowElem, hourAngle, clockCenterX, clockCenterY);	// поворачиваем часовую стрелку
-			rotateArrow(minArrowElem, minArrowAngle, clockCenterX, clockCenterY);	// поворачиваем минутную стрелку
-			rotateArrow(secArrowElem, secArrowAngle, clockCenterX, clockCenterY);	// поворачиваем секундную стрелку
+			while (clockSvgBody.querySelector('line')) {
+				clockSvgBody.querySelector('line').remove();
+			}
+			buildArrow(clockSvgBody, hourArrowLength, hourAngle, hourAnglethickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
+			buildArrow(clockSvgBody, minArrowLength, minArrowAngle, minArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
+			buildArrow(clockSvgBody, secArrowLength, secArrowAngle, secArrowthickness, arrowColor, clockCenterX, clockCenterY, arrowOffset);
 
-			digitalClockElem.innerHTML = currentTime;	// обновляем текущее время в цифровых часах
+			while (clockSvgBody.querySelector('#DIGITAL_CLOCK')) {
+				clockSvgBody.querySelector('#DIGITAL_CLOCK').remove();
+			}
+			buildDigitelClock(clockSvgBody, digitalClockDistance, digitalClockFontSize, clockCenterX, clockCenterY, currentTime);
 
-			setTimeout(updateClock, (1010 - currMs));	// синхронизируем время
+			setTimeout(updateClock, (1010 - currMs));
 
-			console.log(currentTime);	// выводим время в консоль
+			console.log(currentTime);
 		}
 
-		updateClock();	// вызываем функцию, которая обновит часы
+		updateClock();
 
 		//===============================================================================================
 		// удаляем все "ненужные" элементы
@@ -148,16 +139,15 @@ function getClockSize(eo) {
 }
 
 //===============================================================================================
-// строит и позиционирует стрелки в родительском элементе body с длинной стрелки length,
-// толщиной стрелки thickness, цветом стрелки color, и начальными координатами стрелки x1 и y1
-// с отступом от центра offset и ID элемента = name
+// строит и позиционирует стрелки в родительском элементе body с длинной стрелки length, под углом наклона
+// стрелки angle, толщиной стрелки thickness, цветом стрелки color, и начальными координатами стрелки x1 и y1
 
-function buildArrow(body, length, thickness, color, x1, y1, offset, name) {
-	const startX = x1;
-	const startY = y1 + offset;
+function buildArrow(body, length, angle, thickness, color, x1, y1, offset) {
+	const startX = x1 - offset * Math.sin(angle);
+	const startY = y1 + offset * Math.cos(angle);
 
-	const arrowX = x1;
-	const arrowY = y1 - length;
+	const arrowX = x1 + length * Math.sin(angle);
+	const arrowY = y1 - length * Math.cos(angle);
 
 	const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 
@@ -168,19 +158,8 @@ function buildArrow(body, length, thickness, color, x1, y1, offset, name) {
 	arrow.setAttribute('stroke', color);
 	arrow.setAttribute('stroke-width', thickness);
 	arrow.setAttribute('stroke-linecap', 'round');
-	arrow.setAttribute('id', name);
 
 	body.append(arrow);
-}
-
-// функция для вращения стрелки
-// arrow - ссылка на элемент стрелки
-// angle - угол, на который нужно повернуть стрелку
-// x и y - координаты относительно которых необходимо вращать стрелку
-function rotateArrow(arrow, angle, x, y) {
-	const angleDeg = angle * 180 / Math.PI;	// переводим угол из радиан в градусы
-	const angleStr = 'rotate(' + angleDeg + ' ' + x + ' ' + y + ')';
-	arrow.setAttribute('transform', angleStr);
 }
 
 //===============================================================================================
