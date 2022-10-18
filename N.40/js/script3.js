@@ -42,7 +42,8 @@ function getClockSize(eo) {
 			const secArrowAngle = 2 * Math.PI / 60 * currSec;
 
 			let context = canvasElem.getContext('2d');
-			context.clearRect(0, 0, canvasElem.width, canvasElem.height);	// стираем содержимое тега CANVAS
+			context.clearRect(0, 0, clockSize, clockSize);	// стираем содержимое тега CANVAS
+			// context.clearRect(0, 0, canvasElem.width, canvasElem.height);	// стираем содержимое тега CANVAS
 
 			//===============================================================================================
 			// создаем часы (основа)
