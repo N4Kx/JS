@@ -113,7 +113,7 @@ function movePlayer(eo) {
 function stopPlayer(eo) {
 	if (eo.code == 'ShiftLeft' || eo.code == 'ControlLeft') {
 		eo.preventDefault();
-		rightPlayerH.speedY = 0;
+		leftPlayerH.speedY = 0;
 	}
 	if (eo.code == 'ArrowUp' || eo.code == 'ArrowDown') {
 		eo.preventDefault();
