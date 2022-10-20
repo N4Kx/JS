@@ -165,7 +165,7 @@ function randomizeBall() {
 	let b = randomDiap(0, 100);	// коэффициент для выбора знака по оси Y
 
 	const ballSpeedX = randomDiap(4, 8);	// случайная скорость по оси X в диапазоне от a до b
-	const ballSpeedY = randomDiap(0, 5);	// случайная скорость по оси Y в диапазоне от a до b
+	const ballSpeedY = randomDiap(1, 5);	// случайная скорость по оси Y в диапазоне от a до b
 
 	if (a % 2 == 0) {	// если a - чётное - то коэфф. отрицательный
 		a = -1;
