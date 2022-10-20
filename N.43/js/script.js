@@ -157,6 +157,7 @@ function startGame(eo) {
 
 	window.addEventListener('keydown', movePlayer, false);
 	window.addEventListener('keyup', stopPlayer, false);
+	btnElem.removeEventListener('click', startGame, false);
 }
 
 //=========================================================================
@@ -259,22 +260,24 @@ function updateGame() {
 	ballH.posY += ballH.speedY;
 
 	// проверям достиг ли мячик правой стенки
-	while (ballH.posX > (fieldH.width - ballH.width)) {
+	if (ballH.posX > (fieldH.width - ballH.width)) {
 		ballH.posX = (fieldH.width - ballH.width);
 		ballH.speedX = 0;
 		ballH.speedY = 0;
 		scoreH.scoreLeft += 1;
 		endRound();
 		window.removeEventListener('keydown', movePlayer, false);
+		btnElem.addEventListener('click', startGame, false);
 	}
 	// проверям достиг ли мячик левой стенки
-	while (ballH.posX < 0) {
+	if (ballH.posX < 0) {
 		ballH.posX = 0;
 		ballH.speedX = 0;
 		ballH.speedY = 0;
 		scoreH.scoreRight += 1;
 		endRound();
 		window.removeEventListener('keydown', movePlayer, false);
+		btnElem.addEventListener('click', startGame, false);
 	}
 	// проверяем достиг ли мячик верхней стенки, если достиг - он отпрыгивает с той же скоростью
 	if (ballH.posY <= 0) {
