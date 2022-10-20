@@ -6,7 +6,7 @@ const fieldHeight = 500;	//	высота игрового поля
 const fieldCenterX = fieldWidth / 2;	//	вычисляем центр поля по оси X
 const fieldCenterY = fieldHeight / 2;	// вычисляем центр поля по оси Y
 
-const playerWidth = fieldWidth / 50;	// ширина игрока
+const playerWidth = fieldWidth / 100;	// ширина игрока
 const playerHeight = fieldHeight / 3;	// высота игрока
 
 const ballColor = '#E61B32';	// цвет мячика
