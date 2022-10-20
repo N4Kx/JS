@@ -213,6 +213,12 @@ function stopPlayer(eo) {
 	}
 }
 
+// функция для остановки игроков
+function endRound() {
+	leftPlayerH.speedY = 0;
+	rightPlayerH.speedY = 0;
+}
+
 // получение целого случайного числа в заданном диапазоне от n до m
 function randomDiap(n, m) {
 	return Math.floor(
@@ -258,6 +264,7 @@ function updateGame() {
 		ballH.speedX = 0;
 		ballH.speedY = 0;
 		scoreH.scoreLeft += 1;
+		endRound();
 		window.removeEventListener('keydown', movePlayer, false);
 	}
 	// проверям достиг ли мячик левой стенки
@@ -266,8 +273,8 @@ function updateGame() {
 		ballH.speedX = 0;
 		ballH.speedY = 0;
 		scoreH.scoreRight += 1;
+		endRound();
 		window.removeEventListener('keydown', movePlayer, false);
-
 	}
 	// проверяем достиг ли мячик верхней стенки, если достиг - он отпрыгивает с той же скоростью
 	if (ballH.posY <= 0) {
