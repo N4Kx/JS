@@ -1,12 +1,12 @@
 'use strict'
 
 const fieldBGColor = '#EFEE77';	//	цвет игрового поля
-const fieldWidth = 800;		//	ширина игрового поля
+const fieldWidth = 1200;		//	ширина игрового поля
 const fieldHeight = 500;	//	высота игрового поля
 const fieldCenterX = fieldWidth / 2;	//	вычисляем центр поля по оси X
 const fieldCenterY = fieldHeight / 2;	// вычисляем центр поля по оси Y
 
-const playerWidth = fieldWidth / 100;	// ширина игрока
+const playerWidth = fieldWidth / 50;	// ширина игрока
 const playerHeight = fieldHeight / 3;	// высота игрока
 
 const ballColor = '#E61B32';	// цвет мячика
@@ -34,15 +34,6 @@ const btnElemWidth = btnElem.offsetWidth;
 
 btnElem.addEventListener('click', startGame, false);
 
-function startGame(eo) {
-	eo = eo || window.event;
-	console.log(eo);
-
-	btnElem.value = 'Рестарт!';
-
-	btnElem.removeEventListener('click', startGame, false);
-}
-
 const spanWrapperElem = document.querySelector('.span__wrapper');
 spanWrapperElem.style.display = 'flex';
 spanWrapperElem.style.justifyContent = 'center';
@@ -57,8 +48,6 @@ scoreSpan.forEach((elem) => {
 	elem.style.fontSize = fontSize + 'px';
 	elem.style.fontFamily = fontFamily;
 });
-scoreLeft.innerHTML = '0';
-scoreRight.innerHTML = '0';
 
 //========================================================================================================
 // формируем игровое поле
@@ -74,70 +63,26 @@ fieldElem.style.position = 'relative';
 // формируем игроков
 
 const leftPlayerElem = document.querySelector('.left_player');
-// leftPlayerElem.style.height = playerHeight + 'px';
-// leftPlayerElem.style.width = playerWidth + 'px';
 leftPlayerElem.style.backgroundColor = leftPlayerColor;
 leftPlayerElem.style.position = 'absolute';
 
 
 const rightPlayerElem = document.querySelector('.right_player');
-// rightPlayerElem.style.height = playerHeight + 'px';
-// rightPlayerElem.style.width = playerWidth + 'px';
 rightPlayerElem.style.backgroundColor = rightPlayerColor;
 rightPlayerElem.style.position = 'absolute';
-// rightPlayerElem.style.top = '100px';
-// rightPlayerElem.style.left = fieldWidth - playerWidth + 'px';
-
-window.addEventListener('keydown', movePlayer, false);
-window.addEventListener('keyup', stopPlayer, false);
-
-function movePlayer(eo) {
-	if (eo.code == 'ShiftLeft') {
-		eo.preventDefault();
-		leftPlayerH.speedY = -10;
-	}
-	if (eo.code == 'ControlLeft') {
-		eo.preventDefault();
-		leftPlayerH.speedY = 10;
-	}
-	if (eo.code == 'ArrowUp') {
-		eo.preventDefault();
-		rightPlayerH.speedY = -10;
-	}
-	if (eo.code == 'ArrowDown') {
-		eo.preventDefault();
-		rightPlayerH.speedY = 10;
-	}
-}
-
-function stopPlayer(eo) {
-	if (eo.code == 'ShiftLeft' || eo.code == 'ControlLeft') {
-		eo.preventDefault();
-		leftPlayerH.speedY = 0;
-	}
-	if (eo.code == 'ArrowUp' || eo.code == 'ArrowDown') {
-		eo.preventDefault();
-		rightPlayerH.speedY = 0;
-	}
-
-}
 
 //========================================================================================================
 // формируем мячик
 
 const ballElem = document.querySelector('.ball');
 ballElem.style.backgroundColor = ballColor;
-ballElem.style.height = ballRadius + 'px';
-ballElem.style.width = ballRadius + 'px';
-ballElem.style.backgroundColor = ballColor;
 ballElem.style.position = 'absolute';
-ballElem.style.left = ballCenterX + 'px';
-ballElem.style.top = ballCenterY + 'px';
 ballElem.style.borderRadius = circle;
 
+// хэш параметры левого игрока
 let leftPlayerH = {
 	posX: 0,
-	posY: ballCenterY - playerHeight / 2,
+	posY: fieldCenterY - playerHeight / 2,
 	speedY: 0,
 	width: playerWidth,
 	height: playerHeight,
@@ -150,9 +95,10 @@ let leftPlayerH = {
 	}
 }
 
+// хэш параметры правого игрока
 let rightPlayerH = {
 	posX: fieldWidth - playerWidth,
-	posY: ballCenterY - playerHeight / 2,
+	posY: fieldCenterY - playerHeight / 2,
 	speedY: 0,
 	width: playerWidth,
 	height: playerHeight,
@@ -165,24 +111,118 @@ let rightPlayerH = {
 	}
 }
 
+// хэш параметры мячика
+let ballH = {
+	posX: ballCenterX,
+	posY: ballCenterY,
+	speedX: 0,
+	speedY: 0,
+	width: ballRadius,
+	height: ballRadius,
+
+	update: function () {
+		ballElem.style.left = this.posX + 'px';
+		ballElem.style.top = this.posY + 'px';
+		ballElem.style.height = this.height + 'px';
+		ballElem.style.width = this.width + 'px';
+	}
+}
+
+// хэш счёт
+let scoreH = {
+	scoreLeft: 0,
+	scoreRight: 0,
+
+	update: function () {
+		scoreLeft.innerHTML = this.scoreLeft;
+		scoreRight.innerHTML = this.scoreRight;
+	}
+}
+
+// хэш параметры игрового поля
 let fieldH = {
 	width: fieldWidth,
 	height: fieldHeight,
 }
 
+// функция обработчика событий по нажатию на кнопку
+function startGame(eo) {
+	eo = eo || window.event;
+	randomizeBall(ballH);
 
+	ballH.posX = ballCenterX;
+	ballH.posY = ballCenterY;
 
+	btnElem.value = 'Рестарт!';
 
+	window.addEventListener('keydown', movePlayer, false);
+	window.addEventListener('keyup', stopPlayer, false);
+}
 
+//=========================================================================
+function randomizeBall() {
+	let a = randomDiap(0, 100);	// коэффициент для выбора знака по оси X
+	let b = randomDiap(0, 100);	// коэффициент для выбора знака по оси Y
 
-window.onload = () => {
-	leftPlayerH.update();
-	rightPlayerH.update();
-	setInterval(updateGame, 40)
-};
+	const ballSpeedX = randomDiap(4, 8);	// случайная скорость по оси X в диапазоне от a до b
+	const ballSpeedY = randomDiap(0, 5);	// случайная скорость по оси Y в диапазоне от a до b
 
+	if (a % 2 == 0) {	// если a - чётное - то коэфф. отрицательный
+		a = -1;
+	} else {				// иначе а - положительный
+		a = 1;
+	}
+	ballH.speedX = ballSpeedX * a;	// задание значения и направления скорости по оси X
+
+	if (b % 2 == 0) {	// если b - чётное - то коэфф. отрицательный
+		b = -1;
+	} else {				// иначе а - положительный
+		b = 1;
+	}
+	ballH.speedY = ballSpeedY * b;	// задание значения и направления скорости по оси Y
+}
+
+// функция обработчика событи по нажатию и отпусканию кнопок управления - управление игроками
+function movePlayer(eo) {
+	if (eo.code == 'ShiftLeft') {
+		eo.preventDefault();
+		leftPlayerH.speedY = -3;
+	}
+	if (eo.code == 'ControlLeft') {
+		eo.preventDefault();
+		leftPlayerH.speedY = 3;
+	}
+	if (eo.code == 'ArrowUp') {
+		eo.preventDefault();
+		rightPlayerH.speedY = -3;
+	}
+	if (eo.code == 'ArrowDown') {
+		eo.preventDefault();
+		rightPlayerH.speedY = 3;
+	}
+}
+
+function stopPlayer(eo) {
+	if (eo.code == 'ShiftLeft' || eo.code == 'ControlLeft') {
+		eo.preventDefault();
+		leftPlayerH.speedY = 0;
+	}
+	if (eo.code == 'ArrowUp' || eo.code == 'ArrowDown') {
+		eo.preventDefault();
+		rightPlayerH.speedY = 0;
+	}
+}
+
+// получение целого случайного числа в заданном диапазоне от n до m
+function randomDiap(n, m) {
+	return Math.floor(
+		Math.random() * (m - n + 1)
+	) + n;
+}
 
 function updateGame() {
+	//===========================================================================
+	// левй игрок
 	leftPlayerH.posY += leftPlayerH.speedY;
 	// проверяем достиг ли левый игрок верхней границы поля
 	if (leftPlayerH.posY <= 0) {
@@ -194,7 +234,8 @@ function updateGame() {
 		leftPlayerH.posY = (fieldH.height - leftPlayerH.height);
 		leftPlayerH.speedY = 0;
 	}
-
+	//===========================================================================
+	// правый игрок
 	rightPlayerH.posY += rightPlayerH.speedY;
 	// проверяем достиг ли правый игрок верхней границы поля
 	if (rightPlayerH.posY <= 0) {
@@ -206,8 +247,88 @@ function updateGame() {
 		rightPlayerH.posY = (fieldH.height - leftPlayerH.height);
 		rightPlayerH.speedY = 0;
 	}
+	//===========================================================================
+	// мячик
+	ballH.posX += ballH.speedX;
+	ballH.posY += ballH.speedY;
 
+	// проверям достиг ли мячик правой стенки
+	while (ballH.posX > (fieldH.width - ballH.width)) {
+		ballH.posX = (fieldH.width - ballH.width);
+		ballH.speedX = 0;
+		ballH.speedY = 0;
+		scoreH.scoreLeft += 1;
+		window.removeEventListener('keydown', movePlayer, false);
+	}
+	// проверям достиг ли мячик левой стенки
+	while (ballH.posX < 0) {
+		ballH.posX = 0;
+		ballH.speedX = 0;
+		ballH.speedY = 0;
+		scoreH.scoreRight += 1;
+		window.removeEventListener('keydown', movePlayer, false);
+
+	}
+	// проверяем достиг ли мячик верхней стенки, если достиг - он отпрыгивает с той же скоростью
+	if (ballH.posY <= 0) {
+		ballH.speedY = ballH.speedY * (-1);
+		ballH.posY = 0;
+	}
+	// проверяем достиг ли мячик нижней стенки, если достиг - он отпрыгивает с той же скоростью
+	if (ballH.posY > (fieldH.height - ballH.height)) {
+		ballH.speedY = ballH.speedY * (-1);
+		ballH.posY = fieldH.height - ballH.height;
+	}
+
+	// проверяем отбила ли левая ракетка мячик
+	// подлетая к правой границе левого игрока проверяем находится ли левый игрок напротив мячика
+	const offsetBall = ballH.height / 3;	// поправочный коэффициент из-за закругления мячика
+	const leftPlayerBorderX = leftPlayerH.posX + leftPlayerH.width;
+	const leftPlayerBorderY0 = leftPlayerH.posY - offsetBall;
+	const leftPlayerBorderY1 = leftPlayerH.posY + leftPlayerH.height + offsetBall;
+
+	const ballLeftBorderX = ballH.posX;
+	const ballLeftBorderY = ballH.posY + ballH.height / 2;
+
+	if (ballLeftBorderX < leftPlayerBorderX) {
+		if (ballLeftBorderY > leftPlayerBorderY0 && ballLeftBorderY < leftPlayerBorderY1) {
+			ballH.posX = 0 + leftPlayerH.width;
+			ballH.speedX = -ballH.speedX;
+			// console.log('Левый ОТБИЛ!');
+		}
+	}
+
+	// проверяем отбила ли правая ракетка мячик
+	// подлетая к левой границе правого игрока проверяем находится ли правый игрок напротив мячика
+	const rightPlayerBorderX = rightPlayerH.posX;
+	const rightPlayerBorderY0 = rightPlayerH.posY - offsetBall;
+	const rightPlayerBorderY1 = rightPlayerH.posY + rightPlayerH.height + offsetBall;
+
+	const ballRightBorderX = ballH.posX + ballH.width;
+	const ballRightBorderY = ballH.posY + ballH.height / 2;
+
+	if (ballRightBorderX > rightPlayerBorderX) {
+		if (ballRightBorderY > rightPlayerBorderY0 && ballRightBorderY < rightPlayerBorderY1) {
+			ballH.posX = fieldH.width - ballH.width - rightPlayerH.width;
+			ballH.speedX = -ballH.speedX;
+			// console.log('Правый ОТБИЛ!');
+		}
+	}
 
 	leftPlayerH.update();
 	rightPlayerH.update();
+	ballH.update();
+	scoreH.update();
+
+	requestAnimationFrame(updateGame);
 }
+
+// функция обработчик по загрузке страницы, устанавливает начальные параметры игроков и таймер
+window.onload = () => {
+	leftPlayerH.update();
+	rightPlayerH.update();
+	ballH.update();
+	scoreH.update();
+	// setInterval(updateGame, 500);
+	requestAnimationFrame(updateGame);
+};
