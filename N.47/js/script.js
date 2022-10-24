@@ -20,6 +20,7 @@ const fieldWidth = bodyWidth;	// ширина игрового поля
 const fieldHeight = bodyHeight - headerHeight;	// высота игрового поля
 
 const btnColor = '#D9D9D3';	// цвет кнопки
+const btnClickColor = '#F2F8FF';	// цвет кнопки при нажатии
 
 const fieldBGColor = '#EFEE77';	//	цвет игрового поля
 const fieldX = 0;									// координата X игрового поля
@@ -76,6 +77,7 @@ btnElem.setAttribute('height', btnHeight);
 btnElem.setAttribute('x', btnX);
 btnElem.setAttribute('y', btnY);
 btnElem.setAttribute('fill', btnColor);
+btnElem.setAttribute('stroke', 'black');
 
 btnBody.prepend(btnElem);
 
@@ -230,6 +232,11 @@ let scoreH = {
 	}
 }
 
+// функция описывающая анимацию кнопки
+function updateBtn() {
+	btnElem.setAttribute('fill', btnColor);
+}
+
 // функция описывающая кнопку начала раунда
 function start(eo) {
 	eo = eo || window.event;
@@ -241,6 +248,8 @@ function start(eo) {
 		gameState = 1;
 	}
 
+	btnElem.setAttribute('fill', btnClickColor);
+	setTimeout(updateBtn, 300);
 	btnTextElem.innerHTML = 'Рестарт!';
 }
 
