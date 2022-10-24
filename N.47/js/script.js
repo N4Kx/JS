@@ -376,8 +376,8 @@ function updateGame() {
 	// подлетая к правой границе левого игрока проверяем находится ли мячик напротив левого игрока
 	const offsetBall = ballH.radius / 1.6;	// поправочный коэффициент из-за закругления мячика для более красивого подсчета координат отбития (чтобы ракетка не налазила на мячик)
 	const leftPlayerBorderX = leftPlayerH.posX + leftPlayerH.width;	// правая сторона левого игрока по оси X 
-	const leftPlayerBorderY0 = leftPlayerH.posY - offsetBall;	// верхняя сторона левого игрока по оси Y
-	const leftPlayerBorderY1 = leftPlayerH.posY + leftPlayerH.height + offsetBall;	// нижняя сторона левого игрока по оси Y
+	const leftPlayerBorderY0 = leftPlayerH.posY - offsetBall;	// верхняя сторона левого игрока по оси Y с учетом смещения для исключения наслаивания мячика на игрока
+	const leftPlayerBorderY1 = leftPlayerH.posY + leftPlayerH.height + offsetBall;	// нижняя сторона левого игрока по оси Y с учетом смещения для исключения наслаивания мячика на игрока
 
 	const ballLeftSideX = ballH.posCenterX - ballH.radius;	// координата X середины левой границы мячика
 	const ballLeftSideY = ballH.posCenterY;	// координата Y середины левой границы мячика 
@@ -391,11 +391,11 @@ function updateGame() {
 
 	// проверяем отбила ли правая ракетка мячик
 	// подлетая к левой границе правого игрока проверяем находится ли мячик напротив правого игрока
-	const rightPlayerBorderX = rightPlayerH.posX;
-	const rightPlayerBorderY0 = rightPlayerH.posY - offsetBall;
-	const rightPlayerBorderY1 = rightPlayerH.posY + rightPlayerH.height + offsetBall;
+	const rightPlayerBorderX = rightPlayerH.posX;	// левая сторона правого игрока
+	const rightPlayerBorderY0 = rightPlayerH.posY - offsetBall;	// верхняя сторона правого игрока по оси Y с учетом смещения для исключения наслаивания мячика на игрока
+	const rightPlayerBorderY1 = rightPlayerH.posY + rightPlayerH.height + offsetBall;	// нижняя сторона правого игрока по оси Y с учетом смещения для исключения наслаивания мячика на игрока
 
-	const ballRightSideX = ballH.posCenterX + 2 * ballH.radius;	// координата X середины правой границы мячика
+	const ballRightSideX = ballH.posCenterX + ballH.radius;	// координата X середины правой границы мячика
 	const ballRightSideY = ballH.posCenterY;	// координата Y середины правой границы мячика
 
 	if (ballRightSideX > rightPlayerBorderX) {
