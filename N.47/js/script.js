@@ -105,7 +105,6 @@ leftPlayerScoreElem.setAttribute('y', scoreY);
 leftPlayerScoreElem.style.fontSize = scoreFontSize;
 leftPlayerScoreElem.style.fontFamily = scorefontFamily;
 
-// leftPlayerScoreElem.innerHTML = '0';
 svgBodyElem.append(leftPlayerScoreElem);
 
 // создаем счет для правого игрока
@@ -115,8 +114,6 @@ rightPlayerScoreElem.setAttribute('x', rightPlayerScoreX);
 rightPlayerScoreElem.setAttribute('y', scoreY);
 rightPlayerScoreElem.style.fontSize = scoreFontSize;
 rightPlayerScoreElem.style.fontFamily = scorefontFamily;
-
-// rightPlayerScoreElem.innerHTML = '0';
 
 svgBodyElem.append(rightPlayerScoreElem);
 
