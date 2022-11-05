@@ -25,7 +25,7 @@ function GameModel() {
 	this.player = 0;							// игрок в поле
 	this.pass = 1;								// проход 
 
-	this.gameState = 0;		// состояние игры
+	this.gameState = 1;		// состояние игры
 	// 0 - игра остановлена
 	// 1 - игра запущена
 
@@ -53,40 +53,43 @@ function GameModel() {
 
 	// метод для передвижения игрока
 	this.move = (x, y) => {
-		// ставим в текующую позицию игрока проход 1(для наглядности пока 8)
-		this.gameField[this.posY][this.posX] = this.pass;
 
-		// вычисляем новые координаты игрока
-		this.newPlayerPosX = this.posX + x;
-		this.newPlayerPosY = this.posY + y;
+		if (this.gameState == 1) {
+			// ставим в текующую позицию игрока проход 1(для наглядности пока 8)
+			this.gameField[this.posY][this.posX] = this.pass;
 
-		if (this.newPlayerPosX < this.leftBorder || this.newPlayerPosX >= this.rightBorder) {
-			this.gameField[this.newPlayerPosY][this.posX] = this.player;	// если встретилась левая или правая стенка - оставляем игрока в текущих координатах по оси X, т.е. упёрся в стену
-			console.log('ЛЕВАЯ или ПРАВАЯ СТЕНКА!!!')
-		} else if (this.newPlayerPosY < this.topBorder || this.newPlayerPosY >= this.bottomBorder) {
-			this.gameField[this.posY][this.newPlayerPosX] = this.player;	// если встретилась верхняя или нижняя стенка - оставляем игрока в текущих координатах по оси Y, т.е. упёрся в стену
-			console.log('ВЕРХНЯЯ или НИЖНЯЯ СТЕНКА!!!')
-		} else {
-			// вычисляем какое значение в ячейке куда передвигаем игрока
-			this.nextCellValue = this.gameField[this.newPlayerPosY][this.newPlayerPosX];
+			// вычисляем новые координаты игрока
+			this.newPlayerPosX = this.posX + x;
+			this.newPlayerPosY = this.posY + y;
 
-			switch (this.nextCellValue) {
-				case 1:
-					this.shift();
-					break;
-				case 2:
-					this.dig();
-					break;
-				case 3:
-					this.stuck();
-					break;
-				case 4:
-					this.collectDiam();
-					break;
+			if (this.newPlayerPosX < this.leftBorder || this.newPlayerPosX >= this.rightBorder) {
+				this.gameField[this.newPlayerPosY][this.posX] = this.player;	// если встретилась левая или правая стенка - оставляем игрока в текущих координатах по оси X, т.е. упёрся в стену
+				console.log('ЛЕВАЯ или ПРАВАЯ СТЕНКА!!!')
+			} else if (this.newPlayerPosY < this.topBorder || this.newPlayerPosY >= this.bottomBorder) {
+				this.gameField[this.posY][this.newPlayerPosX] = this.player;	// если встретилась верхняя или нижняя стенка - оставляем игрока в текущих координатах по оси Y, т.е. упёрся в стену
+				console.log('ВЕРХНЯЯ или НИЖНЯЯ СТЕНКА!!!')
+			} else {
+				// вычисляем какое значение в ячейке куда передвигаем игрока
+				this.nextCellValue = this.gameField[this.newPlayerPosY][this.newPlayerPosX];
+
+				switch (this.nextCellValue) {
+					case 1:
+						this.shift();
+						break;
+					case 2:
+						this.dig();
+						break;
+					case 3:
+						this.stuck();
+						break;
+					case 4:
+						this.collectDiam();
+						break;
+				}
 			}
-		}
 
-		this.updateView();	// обновляем модель
+			this.updateView();	// обновляем модель
+		}
 	}
 
 	// метод передвижения модели игрока
@@ -98,12 +101,14 @@ function GameModel() {
 		this.posY = this.newPlayerPosY;
 		console.log('Тут проход - ДВИГАЕМСЯ!');
 		console.log(this.gameField);
+		this.gameState = 1;
 	}
 
 	// метод для копания
 	this.dig = () => {
 		// запускаем анимацию копания
 		// === чуть ниже - волшебная константа, увязать с временем анимации ===============================
+		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
 		setTimeout(this.shift, 3000);
 		// this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.pass;
@@ -119,11 +124,14 @@ function GameModel() {
 
 	// метод для сбора алмаза
 	this.collectDiam = () => {
-		// ставим игрока в новые координаты
-		this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.player;
-		// записываем новые координаты игрока в текущую позицию
-		this.posX = this.newPlayerPosX;
-		this.posY = this.newPlayerPosY;
+		// // ставим игрока в новые координаты
+		// this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.player;
+		// // записываем новые координаты игрока в текущую позицию
+		// this.posX = this.newPlayerPosX;
+		// this.posY = this.newPlayerPosY;
+		this.gameState = 0;
+		//	запускаем таймер на передвижение игрока
+		setTimeout(this.shift, 3000);
 		this.gameScore += 100;		//		прибавляем очки за собранный алмаз
 		console.log('Тут алмаз - СОБИРАЕМ!');
 	}
@@ -163,7 +171,6 @@ function GameController() {
 	let myModel = null;
 	let myField = null;
 
-
 	this.start = (model, field) => {
 
 		myModel = model;
@@ -173,23 +180,27 @@ function GameController() {
 	}
 	this.movePlayer = (eo) => {
 		eo = eo || window.event;
-		eo.preventDefault();
+
 		if (eo.code == 'ArrowUp') {
+			eo.preventDefault();
 			myModel.move(0, -1);
 			console.log('Вверх');
 			// console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowDown') {
+			eo.preventDefault();
 			myModel.move(0, 1);
 			console.log('Вниз');
 			// console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowLeft') {
+			eo.preventDefault();
 			myModel.move(-1, 0);
 			console.log('Влево');
 			// console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowRight') {
+			eo.preventDefault();
 			myModel.move(1, 0);
 			console.log('Вправо');
 			// console.log(myModel.gameField);
