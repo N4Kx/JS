@@ -321,7 +321,7 @@ function updateGame() {
 	leftPlayerH.update();
 	rightPlayerH.update();
 	ballH.update();
-	scoreH.update();
+	// scoreH.update();
 
 	requestAnimationFrame(updateGame);
 }
@@ -331,7 +331,7 @@ window.onload = () => {
 	leftPlayerH.update();
 	rightPlayerH.update();
 	ballH.update();
-	scoreH.update();
+	// scoreH.update();
 	// setInterval(updateGame, 500);
 	requestAnimationFrame(updateGame);
 };
