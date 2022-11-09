@@ -151,10 +151,17 @@ function GameView() {
 	this.start = (model, field) => {
 		myModel = model;
 		myField = field;
+		myField.width = 1024;
+		myField.height = 768;
 	}
 
 	this.update = () => {
 		// функция которая будет изменять отображение в зависимости от модели
+
+
+
+
+
 		console.log(myModel.gameField);
 		console.log(myModel.nextCellValue)
 		console.log('Игровые очки: ' + myModel.gameScore);
@@ -212,11 +219,11 @@ const game = new GameModel();
 const view = new GameView();
 const controller = new GameController();
 
-const fieldElem = document.querySelector('.main__wrapper');
+const gameFieldCanvas = document.querySelector('#gameField');
 
 game.start(view);
-view.start(game, 1);
-controller.start(game, 1);
+view.start(game, gameFieldCanvas);
+controller.start(game, gameFieldCanvas);
 
 game.updateView();
 
@@ -387,13 +394,6 @@ function ManControllerButtons() {
 
 
 
-// let arr = [
-// 	[0, 1, 2, 3],
-// 	[4, 5, 6, 7],
-// 	[8, 9, 10, 11]
-// ]
-
-// console.log(arr[2][1])
 /*
 // модель данных
 function TGameModel(_Parent)
