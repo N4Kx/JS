@@ -1,11 +1,87 @@
-'use strict'
+'use strict';
+// предзагрузка изображений=============================================================================
+(function () {
+	var resourceCache = {};
+	var loading = [];
+	var readyCallbacks = [];
+
+	// Load an image url or an array of image urls
+	function load(urlOrArr) {
+		if (urlOrArr instanceof Array) {
+			urlOrArr.forEach(function (url) {
+				_load(url);
+			});
+		}
+		else {
+			_load(urlOrArr);
+		}
+	}
+
+	function _load(url) {
+		if (resourceCache[url]) {
+			return resourceCache[url];
+		}
+		else {
+			var img = new Image();
+			img.onload = function () {
+				resourceCache[url] = img;
+
+				if (isReady()) {
+					readyCallbacks.forEach(function (func) { func(); });
+				}
+			};
+			resourceCache[url] = false;
+			img.src = url;
+		}
+	}
+
+	function get(url) {
+		return resourceCache[url];
+	}
+
+	function isReady() {
+		var ready = true;
+		for (var k in resourceCache) {
+			if (resourceCache.hasOwnProperty(k) &&
+				!resourceCache[k]) {
+				ready = false;
+			}
+		}
+		return ready;
+	}
+
+	function onReady(func) {
+		readyCallbacks.push(func);
+	}
+
+	window.resources = {
+		load: load,
+		get: get,
+		onReady: onReady,
+		isReady: isReady
+	};
+})();
+
+resources.load([
+	'img/game_sprite.png',
+	'img/player_walk_left.png',
+	'img/player_walk_right.png'
+]);
+//======================================================================================================
+
 // Model
 function GameModel() {
 	this.gameField = [
-		[1, 1, 1, 1, 1],
-		[2, 2, 2, 2, 2],
-		[3, 3, 1, 1, 1],
-		[4, 4, 4, 4, 4],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[3, 3, 3, 2, 3, 3, 3, 1, 1, 1],
+		[4, 4, 4, 4, 4, 1, 1, 1, 1, 1],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 	];
 	// массив для хранения игрового поля
 	// let gameField = [];	// массив для хранения игрового поля
@@ -13,8 +89,7 @@ function GameModel() {
 	// 1 - проход
 	// 2 - земля которую можно копать
 	// 3 - камень который нельзя копать
-	// 4 - алмаз
-	// 5 - сундук или мешочек
+	// 4 - сундук
 
 	// границы игрового поля
 	this.topBorder = 0;											// верхняя граница
@@ -24,6 +99,14 @@ function GameModel() {
 
 	this.player = 0;							// игрок в поле
 	this.pass = 1;								// проход 
+
+	this.playerState = 0;
+	// 0 - игрок стоит
+	// 1 - игрок идет верх
+	// 2 - игрок идет вправо
+	// 3 - игрок идет вниз
+	// 4 - игрок идет влево
+	// 5 - игрок копает
 
 	this.gameState = 1;		// состояние игры
 	// 0 - игра остановлена
@@ -110,7 +193,7 @@ function GameModel() {
 		// === чуть ниже - волшебная константа, увязать с временем анимации ===============================
 		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
-		setTimeout(this.shift, 3000);
+		setTimeout(this.shift, 1000);
 		// this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.pass;
 		console.log('Тут земля - КОПАЕМ!');
 	}
@@ -131,15 +214,11 @@ function GameModel() {
 		// this.posY = this.newPlayerPosY;
 		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
-		setTimeout(this.shift, 3000);
+		setTimeout(this.shift, 1000);
 		this.gameScore += 100;		//		прибавляем очки за собранный алмаз
 		console.log('Тут алмаз - СОБИРАЕМ!');
 	}
 }
-
-
-
-
 
 
 // View
@@ -151,27 +230,126 @@ function GameView() {
 	this.start = (model, field) => {
 		myModel = model;
 		myField = field;
-		myField.width = 1024;
-		myField.height = 768;
+		myField.width = 640;
+		myField.height = 640;
+
+		resources.onReady(this.init);
 	}
 
 	this.update = () => {
-		// функция которая будет изменять отображение в зависимости от модели
+		// функция которая отрисовывает игровое поле в зависимости от модели
+		this.drawBackground();
 
+		if (myModel.playerState == 0) {
+			this.drawPlayer();
+		}
+		if (myModel.playerState == 2) {
+			this.playerWalkRight();
+		}
+		if (myModel.playerState == 4) {
+			this.playerWalkLeft();
+		}
+	}
 
+	// The main game loop
+	let lastTime;
+	this.loop = () => {
+		let now = Date.now();
+		let dt = (now - lastTime) / 1000.0;
 
+		this.update();
+		// update(dt);
+		// render();
 
+		lastTime = now;
+		requestAnimationFrame(this.loop);
+	}
 
-		console.log(myModel.gameField);
-		console.log(myModel.nextCellValue)
-		console.log('Игровые очки: ' + myModel.gameScore);
+	this.init = () => {
+		lastTime = Date.now();
+		this.loop();
+	}
+
+	this.drawBackground = () => {
+		this.context = myField.getContext('2d');
+		this.context.clearRect(0, 0, myField.width, myField.height);
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем игровое поле
+				this.context.drawImage(resources.get('img/game_sprite.png'),
+					myModel.gameField[row][column] * 64, 0, 64, 64,
+					column * 64, row * 64, 64, 64);
+			}
+		}
+	}
+
+	this.drawPlayer = () => {
+		this.context = myField.getContext('2d');
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем человечка
+				if (myModel.gameField[row][column] == 0) {
+					this.context.drawImage(resources.get('img/game_sprite.png'),
+						5 * 64, 0, 64, 64,
+						column * 64, row * 64, 64, 64)
+				}
+			}
+		}
+	}
+
+	this.step = 0;
+	this.stepSubFrame = 0;
+
+	this.playerWalkRight = () => {
+		this.context = myField.getContext('2d');
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем человечка
+				if (myModel.gameField[row][column] == 0) {
+					this.context.clearRect(0, 0, myField.width, myField.height);
+					this.drawBackground();
+
+					this.context.drawImage(resources.get('img/player_walk_right.png'),
+						this.stepSubFrame * 64, 0, 64, 64,
+						column * 64, row * 64, 64, 64);
+
+					if (this.step % 12 == 0) {
+						this.stepSubFrame++;
+					}
+					if (this.stepSubFrame == 8) {
+						this.stepSubFrame = 0;
+					}
+					this.step++;
+				}
+			}
+		}
+	}
+
+	this.playerWalkLeft = () => {
+		this.context = myField.getContext('2d');
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем человечка
+				if (myModel.gameField[row][column] == 0) {
+					this.context.clearRect(0, 0, myField.width, myField.height);
+					this.drawBackground();
+
+					this.context.drawImage(resources.get('img/player_walk_left.png'),
+						this.stepSubFrame * 64, 0, 64, 64,
+						column * 64, row * 64, 64, 64);
+
+					if (this.step % 12 == 0) {
+						this.stepSubFrame++;
+					}
+					if (this.stepSubFrame == 8) {
+						this.stepSubFrame = 0;
+					}
+					this.step++;
+				}
+			}
+		}
 	}
 }
-
-
-
-
-
 
 // Controller
 function GameController() {
@@ -203,12 +381,14 @@ function GameController() {
 		if (eo.code == 'ArrowLeft') {
 			eo.preventDefault();
 			myModel.move(-1, 0);
+			myModel.playerState = 4;		// влево
 			console.log('Влево');
-			// console.log(myModel.gameField);
+			// console.log(myModel.playerState);
 		}
 		if (eo.code == 'ArrowRight') {
 			eo.preventDefault();
 			myModel.move(1, 0);
+			myModel.playerState = 2;		// вправо
 			console.log('Вправо');
 			// console.log(myModel.gameField);
 		}
@@ -224,398 +404,3 @@ const gameFieldCanvas = document.querySelector('#gameField');
 game.start(view);
 view.start(game, gameFieldCanvas);
 controller.start(game, gameFieldCanvas);
-
-game.updateView();
-
-
-
-
-
-
-
-
-
-/*
-// model
-function ManModel() {
-	this.posX = 50;
-	this.posY = 50;
-	this.isRun = false;
-
-	let myView = null;
-
-	this.start = function (view) {
-		myView = view;
-	}
-
-	this.updateView = function () {
-		// при любых изменениях модели попадаем
-		// сюда; представление может быть любым,
-		// лишь бы имело метод update()
-		if (myView)
-			myView.update();
-	};
-
-	this.shift = function (x, y) {
-		this.posX += (this.isRun ? 30 : 5) * x;
-		this.posY += (this.isRun ? 30 : 5) * y;
-		this.updateView();
-		// модель при любых изменениях
-		// вызывает обновление представления
-	};
-
-	this.setRun = function (r) {
-		this.isRun = r;
-		this.updateView();
-		// модель при любых изменениях
-		// вызывает обновление представления
-	}
-
-};
-
-// view
-
-function ManViewWebPage() {
-	let myModel = null; // с какой моделью работаем
-	// внутри какого тега наша вёрстка
-	let myField = null;
-	let runCheckbox = null; // чекбокс "бег"
-	let manDiv = null; // сам человечек
-
-	this.start = function (model, field) {
-		myModel = model;
-		myField = field;
-
-		// ищем и запоминаем нужные элементы DOM
-		runCheckbox = myField.querySelector('.SRun');
-		manDiv = myField.querySelector('.SMan');
-	}
-
-	this.update = function () {
-		runCheckbox.checked = myModel.isRun;
-		manDiv.style.left = myModel.posX + "px";
-		manDiv.style.top = myModel.posY + "px";
-	}
-
-};
-
-// controller
-
-function ManControllerButtons() {
-	let myModel = null; // с какой моделью работаем
-	// внутри какого тега наша вёрстка
-	let myField = null;
-	let runCheckbox = null; // чекбокс "бег"
-
-	this.start = function (model, field) {
-		myModel = model;
-		myField = field;
-
-		// ищем и запоминаем нужные элементы DOM
-		// назначаем обработчики событий
-
-		runCheckbox = myField.querySelector('.SRun');
-		runCheckbox.addEventListener('change',
-			this.runChanged);
-
-		const buttonUp =
-			myField.querySelector('.SUp');
-		buttonUp.addEventListener('click',
-			this.shiftUp);
-		const buttonDown =
-			myField.querySelector('.SDown');
-		buttonDown.addEventListener('click',
-			this.shiftDown);
-		const buttonLeft =
-			myField.querySelector('.SLeft');
-		buttonLeft.addEventListener('click',
-			this.shiftLeft);
-		const buttonRight =
-			myField.querySelector('.SRight');
-		buttonRight.addEventListener('click',
-			this.shiftRight);
-	}
-
-	// контроллер вызывает только методы модели
-	this.shiftLeft = function () {
-		myModel.shift(-1, 0);
-	}
-
-	this.shiftRight = function () {
-		myModel.shift(1, 0);
-	}
-
-	this.shiftUp = function () {
-		myModel.shift(0, -1);
-	}
-
-	this.shiftDown = function () {
-		myModel.shift(0, 1);
-	}
-
-	this.runChanged = function () {
-		if (myModel)
-			myModel.setRun(runCheckbox.checked);
-	}
-
-}
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// модель данных
-function TGameModel(_Parent)
-{
-  this.Parent=_Parent;
-
-  this.CatalogModelH={};
-  
-  // класс "пушка"
-  function TGun(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 this.Ident=null; // идентификатор
-	 this.Type=this.Parent.Parent.CGunsType;
-	 this.Bullets=undefined; // свойство "осталось снарядов"
-	 // метод "перезарядка"
-	 this.Reload=function(NewBullets) { this.Bullets=NewBullets; }
-	 // метод "огонь"
-	 this.Fire=function() { console.log('Fire!'); }
-	 // инициализатор - пушка как объект JS создана, заполняем поля, регистрируем в каталоге
-	 this.Init=function(_Ident) 
-	 {
-		this.Ident=_Ident;
-		this.Reload(50);  // заряжаем 50 снарядами
-		this.Parent.CatalogModelH[this.Ident]=this; // регистрируем в каталоге
-		console.log('модель пушки '+this.Ident+' создана и инициализирована');
-	 }
-	 // деструктор - удаляем из каталога, чистим все ссылки, методы можно не чистить
-	 this.Destroy=function()
-	 {
-		delete this.Parent.CatalogModelH[this.Ident];
-		this.Parent=null;
-		console.log('модель пушки '+this.Ident+' разрушена');
-	 }
-  }
-
-  // класс "фабрика пушек"
-  function TGunFactory(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 this.Counter=0; // сколько уже пушек создано
-	 // создание новой пушки
-	 this.Create=function()
-	 {
-		this.Counter++;
-		var Ident=this.Parent.Parent.CGunsType+this.Counter;
-		var Gun=new TGun(this.Parent); // родителем для пушек будет GameModel
-		Gun.Init(Ident);
-		return Gun;
-	 }
-  }
-
-  this.GunFactory=new TGunFactory(this);
-
-  // менеджер тайлов (не реализован)
-  function TTilesManager(_Parent) { }
-  this.TilesManager=new TTilesManager(this);
-}
-
-// визуал
-function TGameVisual(_Parent)
-{
-  this.Parent=_Parent;
-
-  this.CatalogVisualH={};
-  
-  // класс "визуал пушки"
-  function TGunVisual(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 this.Ident=null; // идентификатор
-	 this.Type=this.Parent.Parent.CGunsType;
-	 this.Image=null; // ссылка на некий DOM-элемент
-	 // инициализатор - визуал пушки как объект JS создан, заполняем поля, регистрируем в каталоге
-	 this.InitVisual=function(_Ident)
-	 {
-		this.Ident=_Ident;
-		var Gun=this.Parent.Parent.GameModel.CatalogModelH[this.Ident];
-		// this.Image=document.createElement(...)
-		this.Parent.CatalogVisualH[this.Ident]=this; // регистрируем в каталоге
-		console.log('визуал пушки '+Gun.Ident+' создан и инициализирован');
-	 }
-	 // деструктор - удаляем из каталога, чистим все ссылки, методы можно не чистить
-	 this.DestroyVisual=function()
-	 {
-		delete this.Parent.CatalogVisualH[this.Ident];
-		// удаляем this.Image из DOM или прячем в чулан
-		this.Image=null;
-		console.log('визуал пушки '+this.Ident+' разрушен');
-	 }
-	 // метод "обновить визуал"
-	 this.UpdateVisual=function()
-	 {
-		// получаем модель пушки
-		var Gun=this.Parent.Parent.GameModel.CatalogModelH[this.Ident];
-		// вносим нужные изменения в визуал, т.е. в DOM-элемент
-	 }
-  }
-
-  // класс "фабрика визуалов пушек"
-  function TGunVisualFactory(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 // создание нового визуала пушки
-	 this.CreateVisual=function(_Ident)
-	 {
-		var GunVisual=new TGunVisual(this.Parent); // родителем для визуалов пушек будет GameVisual
-		GunVisual.InitVisual(_Ident);
-		return GunVisual;
-	 }
-  }
-
-  this.GunVisualFactory=new TGunVisualFactory(this);
-}
-
-// контроллер игры
-function TGameControl(_Parent)
-{
-  this.Parent=_Parent;
-
-  this.CatalogControlH={};
-  
-  // класс "контроллер пушки"
-  function TGunControl(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 this.Ident=null; // идентификатор
-	 this.Type=this.Parent.Parent.CGunsType;
-	 this.Timer=null; // ссылка на некий создаваемый объект
-	 // инициализатор - контроллер пушки как объект JS создан, заполняем поля, регистрируем в каталоге
-	 this.InitControl=function(_Ident)
-	 {
-		this.Ident=_Ident;
-		var Gun=this.Parent.Parent.GameModel.CatalogModelH[this.Ident];
-		// this.Timer=createInterval(...) // создаём необходимые контроллеру объекты
-		// addEventListener(...);  // навешиваем обработчики
-		this.Parent.CatalogControlH[this.Ident]=this; // регистрируем в каталоге
-		console.log('контроллер пушки '+Gun.Ident+' создан и инициализирован');
-	 }
-	 // деструктор - удаляем из каталога, чистим все ссылки, методы можно не чистить
-	 this.DestroyControl=function()
-	 {
-		console.log('контроллер пушки '+this.Ident+' разрушен');
-		delete this.Parent.CatalogControlH[this.Ident];
-		// clearInterval(...); // останавливаем таймер
-		// removeEventListener(...);  // удаляем обработчики
-		this.Timer=null;
-	 }
-	 // метод "обновить визуал"
-	 this.UpdateControl=function()
-	 {
-		// получаем модель пушки
-		var Gun=this.Parent.Parent.GameModel.CatalogModelH[this.Ident];
-		// получаем визуал пушки
-		var GunVisual=this.Parent.Parent.GameVisual.CatalogVisualH[this.Ident];
-		// вносим нужные изменения в контроллер - в обработчики, в таймер...
-	 }
-  }
-
-  // класс "фабрика контроллеров пушек"
-  function TGunControlFactory(_Parent)
-  {
-	 this.Parent=_Parent; // родитель
-	 // создание нового контроллера пушки
-	 this.CreateControl=function(_Ident)
-	 {
-		var GunControl=new TGunControl(this.Parent); // родителем для контроллеров пушек будет GameControl
-		GunControl.InitControl(_Ident);
-		return GunControl;
-	 }
-  }
-
-  this.GunControlFactory=new TGunControlFactory(this);
-
-  this.TestGunCreate=function()
-  {
-	 console.log('--- тест создания пушки');
-	 
-	 var Gun=this.Parent.GameModel.GunFactory.Create();
-	 var GunVisual=this.Parent.GameVisual.GunVisualFactory.CreateVisual(Gun.Ident);
-	 var GunControl=this.Parent.GameControl.GunControlFactory.CreateControl(Gun.Ident);
-
-	 console.log('ГОТОВА пушка '+Gun.Ident+', снарядов '+Gun.Bullets);
-
-	 return Gun.Ident;
-  }
-  this.TestGunDestroy=function(Ident)
-  {
-	 console.log('--- тест удаления пушки');
-
-	 var GunControl=this.CatalogControlH[Ident];
-	 GunControl.DestroyControl();
-
-	 var GunVisual=this.Parent.GameVisual.CatalogVisualH[Ident];
-	 GunVisual.DestroyVisual();
-
-	 var Gun=this.Parent.GameModel.CatalogModelH[Ident];
-	 Gun.Destroy();
-
-	 console.log('УДАЛЕНА пушка '+Ident);
-  }
-}
-
-// класс игры
-function TGame()
-{
-  this.CGunsType="GUN"; // константа - тип для объектов "пушка"
-
-  this.GameModel=new TGameModel(this);
-  this.GameVisual=new TGameVisual(this);
-  this.GameControl=new TGameControl(this);
-
-  this.Test=function()
-  {
-	 var GunIdent=this.GameControl.TestGunCreate();
-	 this.GameControl.TestGunDestroy(GunIdent);
-  }
-}
-
-// объект игры
-var Game=new TGame();
-
-// тестируем
-Game.Test();
-*/
