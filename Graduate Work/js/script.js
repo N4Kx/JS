@@ -65,7 +65,9 @@
 resources.load([
 	'img/game_sprite.png',
 	'img/player_walk_left.png',
-	'img/player_walk_right.png'
+	'img/player_walk_right.png',
+	'img/player_walk_up.png',
+	'img/player_walk_down.png'
 ]);
 //======================================================================================================
 
@@ -90,6 +92,12 @@ function GameModel() {
 	// 2 - земля которую можно копать
 	// 3 - камень который нельзя копать
 	// 4 - сундук
+
+
+	// this.audio = {
+	// 	soundtrack: '\'audio/main_sound.wav\'',
+	// 	step: '\'audio/double_step.wav\''
+	// }
 
 	// границы игрового поля
 	this.topBorder = 0;											// верхняя граница
@@ -171,7 +179,7 @@ function GameModel() {
 				}
 			}
 
-			this.updateView();	// обновляем модель
+			// this.updateView();	// обновляем модель
 		}
 	}
 
@@ -182,6 +190,7 @@ function GameModel() {
 		// записываем новые координаты игрока в текущую позицию
 		this.posX = this.newPlayerPosX;
 		this.posY = this.newPlayerPosY;
+		myView.playSound(myView.stepSound);
 		console.log('Тут проход - ДВИГАЕМСЯ!');
 		console.log(this.gameField);
 		this.gameState = 1;
@@ -193,8 +202,7 @@ function GameModel() {
 		// === чуть ниже - волшебная константа, увязать с временем анимации ===============================
 		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
-		setTimeout(this.shift, 1000);
-		// this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.pass;
+		setTimeout(this.shift, 50);
 		console.log('Тут земля - КОПАЕМ!');
 	}
 
@@ -207,14 +215,11 @@ function GameModel() {
 
 	// метод для сбора алмаза
 	this.collectDiam = () => {
-		// // ставим игрока в новые координаты
-		// this.gameField[this.newPlayerPosY][this.newPlayerPosX] = this.player;
-		// // записываем новые координаты игрока в текущую позицию
-		// this.posX = this.newPlayerPosX;
-		// this.posY = this.newPlayerPosY;
 		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
-		setTimeout(this.shift, 1000);
+		setTimeout(this.shift, 50);
+		myView.playSound(myView.collectSound);
+		// myView.stopSound(myView.stepSound);
 		this.gameScore += 100;		//		прибавляем очки за собранный алмаз
 		console.log('Тут алмаз - СОБИРАЕМ!');
 	}
@@ -226,16 +231,51 @@ function GameView() {
 	let myModel = null;	// переменная для model
 	let myField = null; 	// переменная для области в которой работаем
 
+	// метод для проигрывания звука
+	this.playSound = (sound) => {
+		sound.currentTime = 0;
+		sound.volume = 1;
+		sound.play();
+	}
+
+	// метод остановки воспроизведения звука
+	this.stopSound = (sound) => {
+		sound.pause();
+	}
+	// метод выключения звука у аудио
+	this.muteSound = (sound) => {
+		sound.volume = 0;
+	}
+
+	// метод инициализации аудио
+	this.soundInit = (sound) => {
+		sound.play();
+		sound.pause();
+		console.log('Звук инициализирован');
+	}
 
 	this.start = (model, field) => {
 		myModel = model;
 		myField = field;
+
 		myField.width = 640;
 		myField.height = 640;
+		this.gameSound = new Audio('audio/main_sound.wav');
+		this.stepSound = new Audio('audio/double_step.wav');
+		this.collectSound = new Audio('audio/collect.wav');
+
+		// для теста. музыка запускается, если кликнуть по игровому полю
+		field.onclick = () => { this.soundInit(this.gameSound) };
+		field.onclick = () => {
+			this.gameSound.loop = true;
+			this.playSound(this.gameSound);
+			this.gameSound.volume = 0.05;
+		};
 
 		resources.onReady(this.init);
 	}
 
+	// метод обновления визуализации игры
 	this.update = () => {
 		// функция которая отрисовывает игровое поле в зависимости от модели
 		this.drawBackground();
@@ -243,16 +283,23 @@ function GameView() {
 		if (myModel.playerState == 0) {
 			this.drawPlayer();
 		}
+		if (myModel.playerState == 1) {
+			this.playerWalkUp();
+		}
 		if (myModel.playerState == 2) {
 			this.playerWalkRight();
+		}
+		if (myModel.playerState == 3) {
+			this.playerWalkDown();
 		}
 		if (myModel.playerState == 4) {
 			this.playerWalkLeft();
 		}
 	}
 
-	// The main game loop
+	// цикл игры
 	let lastTime;
+
 	this.loop = () => {
 		let now = Date.now();
 		let dt = (now - lastTime) / 1000.0;
@@ -265,11 +312,14 @@ function GameView() {
 		requestAnimationFrame(this.loop);
 	}
 
+	// первая инициализация игры
 	this.init = () => {
 		lastTime = Date.now();
+
 		this.loop();
 	}
 
+	// метод отрисовки заднего фона
 	this.drawBackground = () => {
 		this.context = myField.getContext('2d');
 		this.context.clearRect(0, 0, myField.width, myField.height);
@@ -283,6 +333,7 @@ function GameView() {
 		}
 	}
 
+	// метод отрисовки игрока
 	this.drawPlayer = () => {
 		this.context = myField.getContext('2d');
 		for (let row = 0; row < 10; row++) {
@@ -299,7 +350,7 @@ function GameView() {
 
 	this.step = 0;
 	this.stepSubFrame = 0;
-
+	// метод отрисовки анимации идущего вправо игрока
 	this.playerWalkRight = () => {
 		this.context = myField.getContext('2d');
 		for (let row = 0; row < 10; row++) {
@@ -325,6 +376,7 @@ function GameView() {
 		}
 	}
 
+	// метод отрисовки анимации идущего влево игрока
 	this.playerWalkLeft = () => {
 		this.context = myField.getContext('2d');
 		for (let row = 0; row < 10; row++) {
@@ -335,6 +387,58 @@ function GameView() {
 					this.drawBackground();
 
 					this.context.drawImage(resources.get('img/player_walk_left.png'),
+						this.stepSubFrame * 64, 0, 64, 64,
+						column * 64, row * 64, 64, 64);
+
+					if (this.step % 12 == 0) {
+						this.stepSubFrame++;
+					}
+					if (this.stepSubFrame == 8) {
+						this.stepSubFrame = 0;
+					}
+					this.step++;
+				}
+			}
+		}
+	}
+
+	// метод отрисовки анимации идущего вверх игрока
+	this.playerWalkUp = () => {
+		this.context = myField.getContext('2d');
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем человечка
+				if (myModel.gameField[row][column] == 0) {
+					this.context.clearRect(0, 0, myField.width, myField.height);
+					this.drawBackground();
+
+					this.context.drawImage(resources.get('img/player_walk_up.png'),
+						this.stepSubFrame * 64, 0, 64, 64,
+						column * 64, row * 64, 64, 64);
+
+					if (this.step % 12 == 0) {
+						this.stepSubFrame++;
+					}
+					if (this.stepSubFrame == 8) {
+						this.stepSubFrame = 0;
+					}
+					this.step++;
+				}
+			}
+		}
+	}
+
+	// метод отрисовки анимации идущего вверх игрока
+	this.playerWalkDown = () => {
+		this.context = myField.getContext('2d');
+		for (let row = 0; row < 10; row++) {
+			for (let column = 0; column < 10; column++) {
+				// отрисовываем человечка
+				if (myModel.gameField[row][column] == 0) {
+					this.context.clearRect(0, 0, myField.width, myField.height);
+					this.drawBackground();
+
+					this.context.drawImage(resources.get('img/player_walk_down.png'),
 						this.stepSubFrame * 64, 0, 64, 64,
 						column * 64, row * 64, 64, 64);
 
@@ -369,28 +473,33 @@ function GameController() {
 		if (eo.code == 'ArrowUp') {
 			eo.preventDefault();
 			myModel.move(0, -1);
+			myModel.playerState = 1;	// вверх
+
 			console.log('Вверх');
-			// console.log(myModel.gameField);
+			console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowDown') {
 			eo.preventDefault();
 			myModel.move(0, 1);
+			myModel.playerState = 3;	// вниз
+
 			console.log('Вниз');
-			// console.log(myModel.gameField);
+			console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowLeft') {
 			eo.preventDefault();
 			myModel.move(-1, 0);
 			myModel.playerState = 4;		// влево
+
 			console.log('Влево');
-			// console.log(myModel.playerState);
+			console.log(myModel.playerState);
 		}
 		if (eo.code == 'ArrowRight') {
 			eo.preventDefault();
 			myModel.move(1, 0);
 			myModel.playerState = 2;		// вправо
 			console.log('Вправо');
-			// console.log(myModel.gameField);
+			console.log(myModel.gameField);
 		}
 	}
 }
@@ -404,3 +513,5 @@ const gameFieldCanvas = document.querySelector('#gameField');
 game.start(view);
 view.start(game, gameFieldCanvas);
 controller.start(game, gameFieldCanvas);
+
+
