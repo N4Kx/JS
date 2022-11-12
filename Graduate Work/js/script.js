@@ -74,30 +74,23 @@ resources.load([
 // Model
 function GameModel() {
 	this.gameField = [
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[3, 3, 3, 2, 3, 3, 3, 1, 1, 1],
+		[1, 1, 1, 4, 4, 4, 4, 4, 2, 2],
+		[2, 2, 2, 2, 2, 2, 2, 1, 2, 2],
+		[3, 3, 3, 2, 3, 3, 3, 1, 3, 4],
 		[4, 4, 4, 4, 4, 1, 1, 1, 1, 1],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+		[3, 4, 3, 2, 3, 4, 3, 2, 3, 2],
+		[3, 4, 3, 2, 3, 4, 3, 2, 3, 2],
+		[3, 4, 3, 2, 3, 3, 3, 2, 3, 2],
+		[4, 4, 2, 2, 2, 2, 2, 2, 3, 2],
+		[3, 3, 3, 3, 3, 3, 2, 2, 2, 2],
+		[4, 4, 4, 4, 4, 4, 1, 1, 2, 2],
 	];
 	// массив для хранения игрового поля
-	// let gameField = [];	// массив для хранения игрового поля
 	// 0 - игрок
 	// 1 - проход
 	// 2 - земля которую можно копать
 	// 3 - камень который нельзя копать
 	// 4 - сундук
-
-
-	// this.audio = {
-	// 	soundtrack: '\'audio/main_sound.wav\'',
-	// 	step: '\'audio/double_step.wav\''
-	// }
 
 	// границы игрового поля
 	this.topBorder = 0;											// верхняя граница
@@ -108,6 +101,7 @@ function GameModel() {
 	this.player = 0;							// игрок в поле
 	this.pass = 1;								// проход 
 
+	// состояние игрока для анимации
 	this.playerState = 0;
 	// 0 - игрок стоит
 	// 1 - игрок идет верх
@@ -116,17 +110,20 @@ function GameModel() {
 	// 4 - игрок идет влево
 	// 5 - игрок копает
 
-	this.gameState = 1;		// состояние игры
+	// состояние игры
+	this.gameState = 1;
 	// 0 - игра остановлена
 	// 1 - игра запущена
 
-	this.gameScore = 0;		// очки игрока
+	// очки игрока
+	this.gameScore = 0;
 
 	// стартовые координаты игрока
 	this.posX = 0;
 	this.posY = 0;
 
-	this.gameField[this.posY][this.posX] = this.player;	// помещаем игрока в начальную позицию
+	// помещаем игрока в начальную позицию
+	this.gameField[this.posY][this.posX] = this.player;
 
 	let myView = null;
 
@@ -144,7 +141,6 @@ function GameModel() {
 
 	// метод для передвижения игрока
 	this.move = (x, y) => {
-
 		if (this.gameState == 1) {
 			// ставим в текующую позицию игрока проход 1(для наглядности пока 8)
 			this.gameField[this.posY][this.posX] = this.pass;
@@ -165,21 +161,19 @@ function GameModel() {
 
 				switch (this.nextCellValue) {
 					case 1:
-						this.shift();
+						this.shift();	// двигаем
 						break;
 					case 2:
-						this.dig();
+						this.dig();		// копаем
 						break;
 					case 3:
-						this.stuck();
+						this.stuck();	// упираемся
 						break;
 					case 4:
-						this.collectDiam();
+						this.collectDiam();	// собираем
 						break;
 				}
 			}
-
-			// this.updateView();	// обновляем модель
 		}
 	}
 
@@ -254,6 +248,7 @@ function GameView() {
 		console.log('Звук инициализирован');
 	}
 
+	// метод связывающий model и область отрисовки
 	this.start = (model, field) => {
 		myModel = model;
 		myField = field;
@@ -305,8 +300,7 @@ function GameView() {
 		let dt = (now - lastTime) / 1000.0;
 
 		this.update();
-		// update(dt);
-		// render();
+		// this.update(dt);
 
 		lastTime = now;
 		requestAnimationFrame(this.loop);
@@ -460,12 +454,11 @@ function GameController() {
 	let myModel = null;
 	let myField = null;
 
+	// метод для связывания controller и model, и области отрисовки
 	this.start = (model, field) => {
-
 		myModel = model;
 		myField = field;
 		window.addEventListener('keydown', this.movePlayer);	// подписываемся на обрабочик событий по нажатию кнопки
-
 	}
 	this.movePlayer = (eo) => {
 		eo = eo || window.event;
@@ -474,44 +467,42 @@ function GameController() {
 			eo.preventDefault();
 			myModel.move(0, -1);
 			myModel.playerState = 1;	// вверх
-
-			console.log('Вверх');
-			console.log(myModel.gameField);
+			// console.log('Вверх');
+			// console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowDown') {
 			eo.preventDefault();
 			myModel.move(0, 1);
 			myModel.playerState = 3;	// вниз
-
-			console.log('Вниз');
-			console.log(myModel.gameField);
+			// console.log('Вниз');
+			// console.log(myModel.gameField);
 		}
 		if (eo.code == 'ArrowLeft') {
 			eo.preventDefault();
 			myModel.move(-1, 0);
 			myModel.playerState = 4;		// влево
-
-			console.log('Влево');
-			console.log(myModel.playerState);
+			// console.log('Влево');
+			// console.log(myModel.playerState);
 		}
 		if (eo.code == 'ArrowRight') {
 			eo.preventDefault();
 			myModel.move(1, 0);
 			myModel.playerState = 2;		// вправо
-			console.log('Вправо');
-			console.log(myModel.gameField);
+			// console.log('Вправо');
+			// console.log(myModel.gameField);
 		}
 	}
 }
 
+// создаем MVC объекты игры
 const game = new GameModel();
 const view = new GameView();
 const controller = new GameController();
 
+// находим область отрисовки
 const gameFieldCanvas = document.querySelector('#gameField');
 
+// связываем MVC объекты игры
 game.start(view);
 view.start(game, gameFieldCanvas);
 controller.start(game, gameFieldCanvas);
-
-
