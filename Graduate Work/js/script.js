@@ -151,10 +151,10 @@ function GameModel() {
 
 			if (this.newPlayerPosX < this.leftBorder || this.newPlayerPosX >= this.rightBorder) {
 				this.gameField[this.newPlayerPosY][this.posX] = this.player;	// если встретилась левая или правая стенка - оставляем игрока в текущих координатах по оси X, т.е. упёрся в стену
-				console.log('ЛЕВАЯ или ПРАВАЯ СТЕНКА!!!')
+				// console.log('ЛЕВАЯ или ПРАВАЯ СТЕНКА!!!')
 			} else if (this.newPlayerPosY < this.topBorder || this.newPlayerPosY >= this.bottomBorder) {
 				this.gameField[this.posY][this.newPlayerPosX] = this.player;	// если встретилась верхняя или нижняя стенка - оставляем игрока в текущих координатах по оси Y, т.е. упёрся в стену
-				console.log('ВЕРХНЯЯ или НИЖНЯЯ СТЕНКА!!!')
+				// console.log('ВЕРХНЯЯ или НИЖНЯЯ СТЕНКА!!!')
 			} else {
 				// вычисляем какое значение в ячейке куда передвигаем игрока
 				this.nextCellValue = this.gameField[this.newPlayerPosY][this.newPlayerPosX];
@@ -185,8 +185,8 @@ function GameModel() {
 		this.posX = this.newPlayerPosX;
 		this.posY = this.newPlayerPosY;
 		myView.playSound(myView.stepSound);
-		console.log('Тут проход - ДВИГАЕМСЯ!');
-		console.log(this.gameField);
+		// console.log('Тут проход - ДВИГАЕМСЯ!');
+		// console.log(this.gameField);
 		this.gameState = 1;
 	}
 
@@ -197,14 +197,14 @@ function GameModel() {
 		this.gameState = 0;
 		//	запускаем таймер на передвижение игрока
 		setTimeout(this.shift, 50);
-		console.log('Тут земля - КОПАЕМ!');
+		// console.log('Тут земля - КОПАЕМ!');
 	}
 
 	// метод при упирании в стену
 	this.stuck = () => {
 		// оставляем игрока в текущих координатах
 		this.gameField[this.posY][this.posX] = this.player;
-		console.log('Тут стена - Я НЕ МОГУ ПРОЙТИ!');
+		// console.log('Тут стена - Я НЕ МОГУ ПРОЙТИ!');
 	}
 
 	// метод для сбора алмаза
@@ -215,7 +215,7 @@ function GameModel() {
 		myView.playSound(myView.collectSound);
 		// myView.stopSound(myView.stepSound);
 		this.gameScore += 100;		//		прибавляем очки за собранный алмаз
-		console.log('Тут алмаз - СОБИРАЕМ!');
+		// console.log('Тут алмаз - СОБИРАЕМ!');
 	}
 }
 
