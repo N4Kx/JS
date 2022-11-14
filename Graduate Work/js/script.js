@@ -1,7 +1,7 @@
 'use strict';
-const lvl_01 = 'http://127.0.0.1:5500/TEST/data/LVL_01.txt';
-const lvl_02 = 'http://127.0.0.1:5500/TEST/data/LVL_02.txt';
-const gameScript = 'http://127.0.0.1:5500/TEST/js/game.js';
+const lvl_01 = 'https://github.com/N4Kx/JS/tree/master/Graduate%20Work/data/LVL_01.txt';
+const lvl_02 = 'https://github.com/N4Kx/JS/tree/master/Graduate%20Work/data/LVL_02.txt';
+const gameScript = 'https://github.com/N4Kx/JS/tree/master/Graduate%20Work/js/game.js';
 
 let lvlData = null;
 
