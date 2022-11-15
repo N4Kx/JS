@@ -1,4 +1,38 @@
-.main__wrapper {
+#main__wrapper {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
+	align-items: center;
+}
+
+#gameField {
+	width: 70%;
+	height: 70%;
+}
+
+#btn__wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.btn,
+#playerName {
+	width: 50vw;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.flex__column {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+
+#gameInfo__wrapper {
+	flex: 0 0 5vh;
 }

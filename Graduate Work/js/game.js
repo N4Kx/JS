@@ -521,27 +521,3 @@ let level = null;
 game.start(view);
 view.start(game, gameFieldCanvas);
 controller.start(game, gameFieldCanvas);
-
-
-/*
-function loadLvlData() {
-	$.ajax('http://127.0.0.1:5500/Graduate%20Work/data/LVL_02.txt',
-		{ type: 'GET', dataType: 'text', success: lvlDataLoaded, complete: complete, error: errorHandler });
-}
-
-function lvlDataLoaded(data) {
-	level = data;
-	console.log(level);
-	// game.updateView();
-}
-
-function complete() {
-	game.updateField(level);
-}
-
-function errorHandler(jqXHR, statusStr, errorStr) {
-	console.log(statusStr + ' ' + errorStr);
-}
-
-startBtn.addEventListener('click', loadLvlData);
-*/

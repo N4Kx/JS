@@ -10,9 +10,21 @@
 </head>
 
 <body>
-	<input type="button" value="Начать игру" id="startTheGame">
-	<input type="button" value="Старт саундтрека" id="soundTrackStart" style="display:none">
-	<div class="main__wrapper">
+	<div id="btn__wrapper">
+		<input type="button" value="Старт саундтрека" id="soundTrackStart" style="display:none" class="btn">
+		<input type="text" name="playerName" id="playerName" value="Player1">
+		<input type="button" value="Начать игру" id="startTheGame" class="btn">
+		<input type="button" value="Продолжить игру" id="continueGame" class="btn">
+		<input type="button" value="Зал славы" id="hallOfFame" class="btn">
+	</div>
+
+	<div id="main__wrapper">
+		<div id="gameInfo__wrapper">
+			<span>Оставшееся время: </span><span id="timer">000</span>
+			<span>Очки: </span><span id="score">000</span>
+			<span>Собрано сундуков: </span><span id="collected">000</span>
+			<span>Оставшиеся сундуки: </span><span id="chests">000</span>
+		</div>
 		<canvas id="gameField"></canvas>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.1.min.js"

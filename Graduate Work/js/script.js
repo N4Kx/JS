@@ -1,7 +1,9 @@
 'use strict';
-const lvl_01 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_01.txt';
-const lvl_02 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_02.txt';
-const gameScript = 'https://n4kx.github.io/JS/Graduate%20Work/js/game.js';
+const pageOrigin = window.location.origin;
+
+const lvl_01 = pageOrigin + '/Graduate%20Work/data/LVL_01.txt';
+const lvl_02 = pageOrigin + '/Graduate%20Work/data/LVL_02.txt';
+const gameScript = pageOrigin + '/Graduate%20Work/js/game.js';
 
 let lvlData = null;
 
@@ -25,10 +27,14 @@ loadLlvlData();
 
 // находим кнопку
 const startBtn = document.querySelector('#startTheGame');
+// находим обёртку кнопок
+const btnWrapper = document.querySelector('#btn__wrapper');
+
+const gameWrapper = document.querySelector('#main__wrapper');
+gameWrapper.classList.toggle('hidden');
 
 // находим область отрисовки
 const gameFieldCanvas = document.querySelector('#gameField');
-gameFieldCanvas.setAttribute('style', 'display: none');
 
 function loadGame() {
 	// функция игры
@@ -45,7 +51,6 @@ function loadGame() {
 	}
 
 	// отображаем canvas
-	gameFieldCanvas.setAttribute('style', 'display: block');
-	// прячем кнопку
-	startBtn.setAttribute('style', 'display:none');
+	gameWrapper.classList.toggle('hidden');
+	btnWrapper.classList.toggle('hidden');
 }
