@@ -1,6 +1,6 @@
-let canvasElem = document.querySelector('#CanvasElem');
-canvasElem.width = 640;
-canvasElem.height = 640;
+let canvas = document.querySelector('#CanvasElem');
+canvas.width = 640;
+canvas.height = 640;
 
 let gameField = [
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -24,15 +24,12 @@ let gameField = [
 // 4 - алмаз
 // 5 - сундук или мешочек
 
-let context = canvasElem.getContext('2d');
+let context = canvas.getContext('2d');
 let spriteSheet = new Image();
-// let playerSprite = new Image();
-
 spriteSheet.src = 'img/game_sprite.png';
-// playerSprite.src = 'img/player_sprite.png';
 
 function drawBackground() {
-	context.clearRect(0, 0, canvasElem.width, canvasElem.height);
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	for (let row = 0; row < 10; row++) {
 		for (let column = 0; column < 10; column++) {
 			// отрисовываем игровое поле
@@ -66,7 +63,7 @@ let stepSubFrame = 0;
 function playerWalkRight() {
 	requestAnimationFrame(playerWalkRight);
 
-	context.clearRect(0, 0, canvasElem.width, canvasElem.height);
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	drawBackground();
 
 
@@ -88,12 +85,45 @@ function loop() {
 	// drawPlayer();
 }
 
-playerWalkRightSprite.onload = function () {
-	requestAnimationFrame(playerWalkRight);
-	// playerWalkRight();
-	// setInterval(playerWalkRight, 20);
+requestAnimationFrame(playerWalkRight);
+
+// playerWalkRightSprite.onload = function () {
+// 	requestAnimationFrame(playerWalkRight);
+// 	// playerWalkRight();
+// 	// setInterval(playerWalkRight, 20);
+// }
+
+// spriteSheet.onload = function () {
+// 	setInterval(loop, 30);
+// }
+
+
+const mainTheme = new Audio('audio/main_sound.wav');
+let click = 0;
+
+window.onclick = () => {
+	if (click == 0) {
+		mainTheme.play();
+		mainTheme.volume = 0.1;
+		click = 1;
+	} else {
+		mainTheme.pause();
+		click = 0;
+	}
 }
 
-spriteSheet.onload = function () {
-	setInterval(loop, 30);
-}
+
+// function mainThemeInit() {
+// 	mainTheme.play();
+// 	mainTheme.pause();
+// }
+
+// mainThemeInit();
+
+// function mainThemeStart() {
+// 	mainTheme.currentTime = 0;
+// 	mainTheme.volume = 0.5;
+// 	mainTheme.play();
+// }
+
+// mainThemeStart();

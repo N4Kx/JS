@@ -255,6 +255,10 @@ function GameView() {
 		console.log('Звук инициализирован');
 	}
 
+	// this.soundTrackStart = () => {
+
+	// }
+
 	// метод связывающий model и область отрисовки
 	this.start = (model, field) => {
 		myModel = model;
@@ -262,17 +266,21 @@ function GameView() {
 
 		myField.width = 640;
 		myField.height = 640;
-		// this.gameSound = new Audio('audio/main_sound.wav');
+		this.gameSound = new Audio('audio/main_sound.wav');
 		this.stepSound = new Audio('audio/double_step.wav');
 		this.collectSound = new Audio('audio/collect.wav');
 
-		// // для теста. музыка запускается, если кликнуть по игровому полю
-		// field.onclick = () => { this.soundInit(this.gameSound) };
-		// field.onclick = () => {
-		// 	this.gameSound.loop = true;
-		// 	this.playSound(this.gameSound);
-		// 	this.gameSound.volume = 0.05;
-		// };
+		// музыка запускается по виртуальному клику по спрятанной кнопке после загрузки игры
+		const soundBtn = document.querySelector('#soundTrackStart');
+		let event = new Event("click");
+
+		soundBtn.onclick = () => { this.soundInit(this.gameSound) };
+		soundBtn.onclick = () => {
+			this.gameSound.loop = true;
+			this.playSound(this.gameSound);
+			this.gameSound.volume = 1;
+		};
+		soundBtn.dispatchEvent(event);
 
 		resources.onReady(this.init);
 	}

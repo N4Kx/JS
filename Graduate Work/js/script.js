@@ -1,9 +1,8 @@
 'use strict';
-const pageOrigin = window.location.origin;
+const lvl_01 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_01.txt';
+const lvl_02 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_02.txt';
+const gameScript = 'https://n4kx.github.io/JS/Graduate%20Work/js/game.js';
 
-const lvl_01 = pageOrigin + '/Graduate%20Work/data/LVL_01.txt';
-const lvl_02 = pageOrigin + '/Graduate%20Work/data/LVL_02.txt';
-const gameScript = pageOrigin + '/Graduate%20Work/js/game.js';
 
 let lvlData = null;
 

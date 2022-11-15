@@ -14,7 +14,7 @@ function loadLlvlData() {
 function lvlDataLoaded(data) {
 	lvlData = data;
 	startBtn.addEventListener('click', loadGame, false);
-	console.log(lvlData);
+	// console.log(lvlData);
 }
 
 function errorHandler(jqXHR, statusStr, errorStr) {
@@ -25,7 +25,6 @@ loadLlvlData();
 
 // находим кнопку
 const startBtn = document.querySelector('#startTheGame');
-
 
 // находим область отрисовки
 const gameFieldCanvas = document.querySelector('#gameField');
@@ -38,18 +37,15 @@ function loadGame() {
 			{ type: 'GET', dataType: 'script', success: loadMessage, error: errorHandler }
 		);
 	}
+
 	loadGameScript();
 
 	function loadMessage(data) {
-		let gameSound = new Audio('audio/main_sound.wav');
-		gameSound.loop = true;
-		gameSound.currentTime = 0;
-		gameSound.volume = 0.05;
-		gameSound.play();
 		console.log('Игра запущена');
 	}
 
 	// отображаем canvas
 	gameFieldCanvas.setAttribute('style', 'display: block');
+	// прячем кнопку
 	startBtn.setAttribute('style', 'display:none');
 }
