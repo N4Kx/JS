@@ -133,8 +133,7 @@ function GameModel() {
 		this.hallOfFame = Object.assign(this.hallOfFame, externalHoF);
 	}
 
-	// подсчитываем кол-во сундуков на карте
-	// метод подсчета кол-ва игровых сундуков в игровом поле
+	// метод подсчета кол-ва сундуков в игровом поле
 	this.calcChests = (arr) => {
 		let cnt = 0;
 		arr.forEach((v, i, a) => {
@@ -143,8 +142,47 @@ function GameModel() {
 					cnt++;
 			})
 		});
-		// console.log(cnt);
 		return cnt;
+	}
+
+	// метод валидации загружаемого игрового массива
+	// метод вернёт true в случае если массив "правильной формы" т.е. длина всех подмассивов одинаковая
+	// вернёт false, если массив "неправильной формы" 
+	// также метод преобразует введенный двумерный массив в двумерный массив с массивами
+	// т.е. обрежет все типы кроме массивов для элементов 1го уровня.
+	this.validateGameField = (arr) => {
+		let newArr = [];			// новый массив для "исправленного" полученного массива (останется только массив с подмассивами)
+		let arrayLength = [];	// массив с длинами подмассивов
+		let status = true;		// выходное значение валидации
+
+		// преобразуем полученный двумерный массив в массив с подмассивами (всё осталное выбросим)
+		arr.forEach(function (v, i, a) {
+			if (Array.isArray(v)) {
+				newArr.push(v);
+			}
+		})
+
+		// получим массив с длинами подмассивов
+		newArr.forEach(function (v, i, a) {
+			arrayLength.push((v.length));
+		})
+
+		// функция для проверки того, что длина подмассивов одинаковая (введённый массив "правильной формы")
+		function checkSubArr(arr) {
+			for (let i = 0; i < arr.length; i++) {
+				let curr = arr[i];
+				let prev = arr[i - 1];
+
+				if (prev != undefined) {
+					if (curr !== prev) {
+						status = false;
+						break;
+					}
+				}
+			}
+		}
+		checkSubArr(arrayLength);
+		return status;
 	}
 
 	let myView = null;
@@ -166,7 +204,10 @@ function GameModel() {
 	}
 
 	this.updateField = (newField) => {
-		this.gameField = newField;
+		if (this.validateGameField(newField))
+			this.gameField = newField;
+		else
+			console.log('С игровым полем что-то не так');
 	}
 
 	// метод инициализации игрока
