@@ -1,20 +1,20 @@
 'use strict';
-const lvl_01 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_01.txt';
-const lvl_02 = 'https://n4kx.github.io/JS/Graduate%20Work/data/LVL_02.txt';
-const gameScript = 'https://n4kx.github.io/JS/Graduate%20Work/js/game.js';
+const lvl_01 = 'http://127.0.0.1:5500/Graduate%20Work/data/LVL_01.json';
+const lvl_02 = 'http://127.0.0.1:5500/Graduate%20Work/data/LVL_02.json';
+const gameScript = 'http://127.0.0.1:5500/Graduate%20Work/js/game.js';
 
 
 let lvlData = null;
 
-function loadLlvlData() {
-	$.ajax(lvl_01,
+function loadLlvlData(lvl) {
+	$.ajax(lvl,
 		{ type: 'GET', dataType: 'text', success: lvlDataLoaded, error: errorHandler }
 	);
 }
 
 function lvlDataLoaded(data) {
-	lvlData = data;
 	startBtn.addEventListener('click', loadGame, false);
+	lvlData = JSON.parse(data);
 	// console.log(lvlData);
 }
 
@@ -22,7 +22,8 @@ function errorHandler(jqXHR, statusStr, errorStr) {
 	console.log(statusStr + ' ' + errorStr);
 }
 
-loadLlvlData();
+loadLlvlData(lvl_01);
+
 
 // находим кнопку
 const startBtn = document.querySelector('#startTheGame');
@@ -53,3 +54,17 @@ function loadGame() {
 	gameWrapper.classList.toggle('hidden');
 	btnWrapper.classList.toggle('hidden');
 }
+
+const gameScoreElem = document.querySelector('#score');
+const restChestsElem = document.querySelector('#chests');
+const collectedChestsElem = document.querySelector('#collected');
+const soundBtn = document.querySelector('#soundTrackStart');
+
+// кнопка сохранить игру
+const saveTheGame = document.querySelector('#saveGameBtn');
+
+// кнопка загрузить уровень 2
+const loalLvlBtn = document.querySelector('#loadLvl2');
+
+//поле имени игрока
+const playerNameElem = document.querySelector('#playerName');

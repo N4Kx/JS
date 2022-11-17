@@ -72,21 +72,7 @@ resources.load([
 //======================================================================================================
 // Model
 function GameModel() {
-	const defaultLevel = [
-		[1, 1, 1, 4, 4, 4, 4, 4, 2, 2],
-		[2, 2, 2, 2, 2, 2, 2, 1, 2, 2],
-		[3, 3, 3, 2, 3, 3, 3, 1, 3, 4],
-		[4, 4, 4, 4, 4, 1, 1, 1, 1, 1],
-		[3, 4, 3, 2, 3, 4, 3, 2, 3, 2],
-		[3, 4, 3, 2, 3, 4, 3, 2, 3, 2],
-		[3, 4, 3, 2, 3, 3, 3, 2, 3, 2],
-		[4, 4, 2, 2, 2, 2, 2, 2, 3, 2],
-		[3, 3, 3, 3, 3, 3, 2, 2, 2, 2],
-		[4, 4, 4, 4, 4, 4, 1, 1, 2, 2],
-	];
-
-	this.gameField = defaultLevel;
-
+	this.gameField;
 	// массив для хранения игрового поля
 	// 0 - игрок
 	// 1 - проход
@@ -95,16 +81,16 @@ function GameModel() {
 	// 4 - сундук
 
 	// границы игрового поля
-	this.topBorder = 0;											// верхняя граница
-	this.bottomBorder = this.gameField.length;			// нижняя граница
-	this.leftBorder = 0;											// левая граница
-	this.rightBorder = this.gameField[0].length;			// правая граница
+	this.topBorder;		// верхняя граница
+	this.bottomBorder;	// нижняя граница
+	this.leftBorder;		// левая граница
+	this.rightBorder;		// правая граница
 
-	this.player = 0;							// игрок в поле
-	this.pass = 1;								// проход 
+	this.player = 0;	// игрок в поле
+	this.pass = 1;		// проход 
 
 	// состояние игрока для анимации
-	this.playerState = 0;
+	this.playerState;
 	// 0 - игрок стоит
 	// 1 - игрок идет верх
 	// 2 - игрок идет вправо
@@ -113,27 +99,63 @@ function GameModel() {
 	// 5 - игрок копает
 
 	// состояние игры
-	this.gameState = 1;
+	this.gameState;
 	// 0 - игра остановлена
 	// 1 - игра запущена
 
 	// очки игрока
-	this.gameScore = 0;
+	this.gameScore;
+	// количество собранных сундуков
+	this.collectedChests;
+	// количество сундуков в игровом поле
+	this.restChests;
 
 	// стартовые координаты игрока
-	this.posX = 0;
-	this.posY = 0;
+	this.posX;
+	this.posY;
 
-	// помещаем игрока в начальную позицию
-	this.gameField[this.posY][this.posX] = this.player;
+	// зал славы
+	this.hallOfFame = {};
+
+	// никнейм игрока
+	this.playerName = null;
+
+	this.setPlayerName = (nickname) => {
+		this.playerName = nickname;
+	}
+
+	this.updateHallOfFame = () => {
+		this.hallOfFame[this.playerName] = this.gameScore;
+	}
+
+	this.updateHof = (externalHoF) => {
+		// объединяем объекты в один
+		this.hallOfFame = Object.assign(this.hallOfFame, externalHoF);
+	}
+
+	// подсчитываем кол-во сундуков на карте
+	// метод подсчета кол-ва игровых сундуков в игровом поле
+	this.calcChests = (arr) => {
+		let cnt = 0;
+		arr.forEach((v, i, a) => {
+			v.filter((v, i, a) => {
+				if (v == 4)
+					cnt++;
+			})
+		});
+		// console.log(cnt);
+		return cnt;
+	}
 
 	let myView = null;
-	// let myLevel = null;
+	let myLevel = null;
 
 	// метод для связывания model и view
-	this.start = (view) => {
+	this.start = (view, level) => {
 		myView = view;	// переменная для view
-		// myLevel = level;	// переменная с уровнем игры
+		myLevel = level;	// переменная с уровнем игры
+		this.updateField(myLevel);
+		this.gameInit(myLevel);
 	}
 
 	// метод для обновления view (отображения)
@@ -145,6 +167,34 @@ function GameModel() {
 
 	this.updateField = (newField) => {
 		this.gameField = newField;
+	}
+
+	// метод инициализации игрока
+	this.gameInit = (lvl) => {
+		// состояние игрока для анимации
+		this.playerState = 0;
+
+		// состояние игры
+		this.gameState = 1;
+
+		// очки игрока
+		this.gameScore = 0;
+		// количество собранных сундуков
+		this.collectedChests = 0;
+
+		// границы игрового поля
+		this.topBorder = 0;											// верхняя граница
+		this.bottomBorder = lvl.length;							// нижняя граница
+		this.leftBorder = 0;											// левая граница
+		this.rightBorder = lvl[0].length;						// правая граница
+
+		// стартовые координаты игрока
+		this.posX = 0;
+		this.posY = 0;
+
+		// помещаем игрока в начальную позицию
+		this.gameField[this.posY][this.posX] = this.player;
+		this.restChests = this.calcChests(lvl);
 	}
 
 	// метод для передвижения игрока
@@ -222,7 +272,10 @@ function GameModel() {
 		setTimeout(this.shift, 50);
 		myView.playSound(myView.collectSound);
 		// myView.stopSound(myView.stepSound);
-		this.gameScore += 100;		//		прибавляем очки за собранный алмаз
+		this.gameScore += 100;			//		прибавляем очки за собранный сундук
+		this.restChests--;				// уменьшаем кол-во оставшихся сундуков
+		this.collectedChests++;			// увеличиваем счетчик собранных сундуков
+		this.updateHallOfFame();		//		обновляем зал славы
 		// console.log('Тут алмаз - СОБИРАЕМ!');
 	}
 }
@@ -255,10 +308,6 @@ function GameView() {
 		console.log('Звук инициализирован');
 	}
 
-	// this.soundTrackStart = () => {
-
-	// }
-
 	// метод связывающий model и область отрисовки
 	this.start = (model, field) => {
 		myModel = model;
@@ -271,15 +320,16 @@ function GameView() {
 		this.collectSound = new Audio('audio/collect.wav');
 
 		// музыка запускается по виртуальному клику по спрятанной кнопке после загрузки игры
-		const soundBtn = document.querySelector('#soundTrackStart');
+		// описываем новое событие click
 		let event = new Event("click");
 
-		soundBtn.onclick = () => { this.soundInit(this.gameSound) };
+		// soundBtn.onclick = () => { this.soundInit(this.gameSound) };
 		soundBtn.onclick = () => {
 			this.gameSound.loop = true;
 			this.playSound(this.gameSound);
-			this.gameSound.volume = 1;
+			this.gameSound.volume = 0.05;
 		};
+		// имитируем клик по скрытой кнопке, который запускает саундтрек
 		soundBtn.dispatchEvent(event);
 
 		resources.onReady(this.init);
@@ -305,6 +355,9 @@ function GameView() {
 		if (myModel.playerState == 4) {
 			this.playerWalkLeft();
 		}
+		gameScoreElem.innerHTML = myModel.gameScore;
+		restChestsElem.innerHTML = myModel.restChests;
+		collectedChestsElem.innerHTML = myModel.collectedChests;
 	}
 
 	// цикл игры
@@ -474,6 +527,7 @@ function GameController() {
 		myModel = model;
 		myField = field;
 		window.addEventListener('keydown', this.movePlayer);	// подписываемся на обрабочик событий по нажатию кнопки
+
 	}
 	this.movePlayer = (eo) => {
 		eo = eo || window.event;
@@ -514,10 +568,135 @@ const game = new GameModel();
 const view = new GameView();
 const controller = new GameController();
 
-
-
-let level = null;
-
-game.start(view);
+game.start(view, lvlData);
 view.start(game, gameFieldCanvas);
 controller.start(game, gameFieldCanvas);
+
+// вносим игрока в Model игры
+const playerName = playerNameElem.value;
+game.setPlayerName(playerName);
+
+// показать зал славы игру 
+loalLvlBtn.addEventListener('click', game.updateHallOfFame);
+
+
+/*
+// прототип загрузки 2го уровня
+loalLvlBtn.addEventListener('click', nextLvlBtnClick);
+loadLlvlData(lvl_02);
+
+function nextLvlBtnClick(eo) {
+	eo = eo || window.event;
+	game.start(view, lvlData);
+}
+*/
+
+/*
+// сохранение игры
+saveTheGame.addEventListener('click', saveTheGameFunc)
+let b = null;
+
+function saveTheGameFunc(eo) {
+	eo = eo || window.event;
+
+	b = JSON.stringify(game);
+	console.log(b);
+}
+
+// загрузить игру 
+loalLvlBtn.addEventListener('click', loadTheGame);
+
+function loadTheGame(eo) {
+	eo = eo || window.event;
+	console.log('Игра загружена из сохранения')
+	return JSON.parse(b);
+	// пока непонятно как загрузить игру
+	
+}
+*/
+
+const ajaxHoFScript = "https://fe.it-academy.by/AjaxStringStorage2.php";	// адрес скрипта для хранилища данных;
+let password;
+const strName = 'RUBAN_DIGGER_HALL_OF_FAME';		// имя запроса
+
+// функция записи в хранилище
+function saveToStorage() {
+	// генерируем случайный пароль
+	password = Math.random();
+	// создаем запрос из хранилища с её блокированием в хранилище LOCKGET
+	$.ajax({
+		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
+		data: { f: 'LOCKGET', n: strName, p: password },
+		success: lockGetReady, error: errorHandler
+	});
+}
+
+function lockGetReady(callresult) {
+	if (callresult.error != undefined) {
+		console.log('фигня в lockGetReady' + callresult.error);
+	}
+	else {
+		// записываем текущие имя и кол-во очков из игры
+		const info = game.hallOfFame;	// получаем текущие имя и кол-во очков из игры
+		console.log('Данные загружены')
+		console.log(info);
+		$.ajax({
+			url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
+			data: { f: 'UPDATE', n: strName, v: JSON.stringify(info), p: password },
+			success: updateReady, error: errorHandler
+		});
+	}
+}
+
+// функция ловит ошибку в случае записи
+function updateReady(callresult) {
+	if (callresult.error != undefined)
+		console.log(callresult.error);
+	// else
+	// 	console.log('Данные загружены');
+}
+
+// функция читает данные из хранилища, для первичного отображения в зале славы
+function updateFromStorage() {
+	$.ajax({
+		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
+		data: { f: 'READ', n: strName },
+		success: readReady, error: errorHandler
+	});
+}
+
+function readReady(callresult) {
+	if (callresult.error != undefined) {
+		alert(callresult.error);
+	} else if (callresult.result != "") {
+		const info = JSON.parse(callresult.result);
+		// метод помещающий данные в таблицу зала славы
+		game.updateHof(info);
+		console.log('Данные получены');
+		console.log(info);
+	}
+}
+
+// функция для ручного отлова ошибок
+function errorHandler(jqXHR, statusStr, errorStr) {
+	console.log(statusStr + ' ' + errorStr);
+}
+
+// сохранение игры во внешнее хранилище
+saveTheGame.addEventListener('click', saveToStorage);
+
+// загрузить HoF из внешнего хранилища
+loalLvlBtn.addEventListener('click', updateFromStorage);
+
+
+// const hallOfFame = document.querySelector('#hallOfFame');
+// function firstInsert() {
+// 	const info = game.updateHallOfFame();	// получаем текущие имя и кол-во очков из игры
+// 	$.ajax({
+// 		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
+// 		data: { f: 'INSERT', n: strName, v: JSON.stringify(info) },
+// 		success: updateReady, error: errorHandler
+// 	});
+// }
+
+// hallOfFame.addEventListener('click', firstInsert);
