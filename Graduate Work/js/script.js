@@ -68,3 +68,7 @@ const loalLvlBtn = document.querySelector('#loadLvl2');
 
 //поле имени игрока
 const playerNameElem = document.querySelector('#playerName');
+
+// константы для работы с внешним хранилищем данных
+const ajaxHoFScript = "https://fe.it-academy.by/AjaxStringStorage2.php";	// адрес скрипта для хранилища данных;
+const strName = 'RUBAN_DIGGER_HALL_OF_FAME';		// имя запроса

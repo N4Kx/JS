@@ -185,6 +185,92 @@ function GameModel() {
 		return status;
 	}
 
+	// свойство - объект для хранения параметров хранилища {url: , stringName:}
+	// ключи
+	// url - адрес хранилища
+	// name - имя хранилища
+	this.storage = {};
+
+	// метод для передачи параметров хранилища
+	this.updateStorageProp = (extUrl, extName) => {
+		this.storage['url'] = extUrl;
+		this.storage['stringName'] = extName;
+		console.log(this.storage);
+	}
+
+	// метод чтения данных из внешнего хранилища и записи их в модель игры
+	this.updateFromStorage = () => {
+		$.ajax({
+			url: this.storage.url, type: 'POST', cache: false, dataType: 'json',
+			data: { f: 'READ', n: this.storage.stringName },
+			success: this.readReady, error: this.errorHandler
+		});
+	}
+
+	this.readReady = (callresult) => {
+		if (callresult.error != undefined) {
+			console.log(callresult.error);
+		} else if (callresult.result != "") {
+			const info = JSON.parse(callresult.result);
+			// метод помещающий данные в таблицу зала славы
+			this.updateHof(info);
+			console.log('Данные получены');
+			console.log(info);
+		}
+	}
+
+	this.password;		// свойство для пароля к доступу к удаленному хранилищу
+
+	// функция записи в хранилище
+	this.saveToStorage = () => {
+		// генерируем случайный пароль
+		this.password = Math.random();
+		// создаем запрос из хранилища с её блокированием в хранилище LOCKGET
+		$.ajax({
+			url: this.storage.url, type: 'POST', cache: false, dataType: 'json',
+			data: { f: 'LOCKGET', n: this.storage.stringName, p: this.password },
+			success: this.lockGetReady, error: this.errorHandler
+		});
+	}
+
+	this.lockGetReady = (callresult) => {
+		if (callresult.error != undefined) {
+			console.log('фигня в lockGetReady' + callresult.error);
+		}
+		else {
+			// записываем текущие имя и кол-во очков из игры
+			const info = this.hallOfFame;	// получаем текущие имя и кол-во очков из игры
+			console.log('Данные загружены')
+			console.log(info);
+			$.ajax({
+				url: this.storage.url, type: 'POST', cache: false, dataType: 'json',
+				data: { f: 'UPDATE', n: this.storage.stringName, v: JSON.stringify(info), p: this.password },
+				success: this.updateReady, error: this.errorHandler
+			});
+		}
+	}
+
+	// функция ловит ошибку в случае записи
+	this.updateReady = (callresult) => {
+		if (callresult.error != undefined)
+			console.log(callresult.error);
+		// else
+		// 	console.log('Данные загружены');
+	}
+
+	// метод отлова ошибок при загрузке из внешнего хранилища
+	// функция для ручного отлова ошибок
+	this.errorHandler = (jqXHR, statusStr, errorStr) => {
+		console.log(statusStr + ' ' + errorStr);
+	}
+
+	// метод получающий таблицу с сервера, добавляющий в него текущие очки и отправляющий на сервер
+	this.updateExtStorage = () => {
+		this.updateFromStorage();	// читаем таблицу с сервера и помещаем в модель игры
+		this.saveToStorage();		// сохраняем новую таблицу на сервер
+	}
+
+
 	let myView = null;
 	let myLevel = null;
 
@@ -203,6 +289,7 @@ function GameModel() {
 		}
 	}
 
+	// метод обновляющий this.gameField
 	this.updateField = (newField) => {
 		if (this.validateGameField(newField))
 			this.gameField = newField;
@@ -617,127 +704,10 @@ controller.start(game, gameFieldCanvas);
 const playerName = playerNameElem.value;
 game.setPlayerName(playerName);
 
-// показать зал славы игру 
-loalLvlBtn.addEventListener('click', game.updateHallOfFame);
-
-
-/*
-// прототип загрузки 2го уровня
-loalLvlBtn.addEventListener('click', nextLvlBtnClick);
-loadLlvlData(lvl_02);
-
-function nextLvlBtnClick(eo) {
-	eo = eo || window.event;
-	game.start(view, lvlData);
-}
-*/
-
-/*
-// сохранение игры
-saveTheGame.addEventListener('click', saveTheGameFunc)
-let b = null;
-
-function saveTheGameFunc(eo) {
-	eo = eo || window.event;
-
-	b = JSON.stringify(game);
-	console.log(b);
-}
-
-// загрузить игру 
-loalLvlBtn.addEventListener('click', loadTheGame);
-
-function loadTheGame(eo) {
-	eo = eo || window.event;
-	console.log('Игра загружена из сохранения')
-	return JSON.parse(b);
-	// пока непонятно как загрузить игру
-	
-}
-*/
-
-const ajaxHoFScript = "https://fe.it-academy.by/AjaxStringStorage2.php";	// адрес скрипта для хранилища данных;
-let password;
-const strName = 'RUBAN_DIGGER_HALL_OF_FAME';		// имя запроса
-
-// функция записи в хранилище
-function saveToStorage() {
-	// генерируем случайный пароль
-	password = Math.random();
-	// создаем запрос из хранилища с её блокированием в хранилище LOCKGET
-	$.ajax({
-		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
-		data: { f: 'LOCKGET', n: strName, p: password },
-		success: lockGetReady, error: errorHandler
-	});
-}
-
-function lockGetReady(callresult) {
-	if (callresult.error != undefined) {
-		console.log('фигня в lockGetReady' + callresult.error);
-	}
-	else {
-		// записываем текущие имя и кол-во очков из игры
-		const info = game.hallOfFame;	// получаем текущие имя и кол-во очков из игры
-		console.log('Данные загружены')
-		console.log(info);
-		$.ajax({
-			url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
-			data: { f: 'UPDATE', n: strName, v: JSON.stringify(info), p: password },
-			success: updateReady, error: errorHandler
-		});
-	}
-}
-
-// функция ловит ошибку в случае записи
-function updateReady(callresult) {
-	if (callresult.error != undefined)
-		console.log(callresult.error);
-	// else
-	// 	console.log('Данные загружены');
-}
-
-// функция читает данные из хранилища, для первичного отображения в зале славы
-function updateFromStorage() {
-	$.ajax({
-		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
-		data: { f: 'READ', n: strName },
-		success: readReady, error: errorHandler
-	});
-}
-
-function readReady(callresult) {
-	if (callresult.error != undefined) {
-		alert(callresult.error);
-	} else if (callresult.result != "") {
-		const info = JSON.parse(callresult.result);
-		// метод помещающий данные в таблицу зала славы
-		game.updateHof(info);
-		console.log('Данные получены');
-		console.log(info);
-	}
-}
-
-// функция для ручного отлова ошибок
-function errorHandler(jqXHR, statusStr, errorStr) {
-	console.log(statusStr + ' ' + errorStr);
-}
+game.updateStorageProp(ajaxHoFScript, strName);
 
 // сохранение игры во внешнее хранилище
-saveTheGame.addEventListener('click', saveToStorage);
+saveTheGame.addEventListener('click', game.updateExtStorage);
 
 // загрузить HoF из внешнего хранилища
-loalLvlBtn.addEventListener('click', updateFromStorage);
-
-
-// const hallOfFame = document.querySelector('#hallOfFame');
-// function firstInsert() {
-// 	const info = game.updateHallOfFame();	// получаем текущие имя и кол-во очков из игры
-// 	$.ajax({
-// 		url: ajaxHoFScript, type: 'POST', cache: false, dataType: 'json',
-// 		data: { f: 'INSERT', n: strName, v: JSON.stringify(info) },
-// 		success: updateReady, error: errorHandler
-// 	});
-// }
-
-// hallOfFame.addEventListener('click', firstInsert);
+loalLvlBtn.addEventListener('click', game.updateFromStorage);
