@@ -1,7 +1,9 @@
 'use strict';
-const lvl_01 = 'http://127.0.0.1:5500/Graduate%20Work/data/LVL_01.json';
-const lvl_02 = 'http://127.0.0.1:5500/Graduate%20Work/data/LVL_02.json';
-const gameScript = 'http://127.0.0.1:5500/Graduate%20Work/js/game.js';
+
+const origin = window.location.origin;
+const lvl_01 = origin + '/JS/Graduate%20Work/data/LVL_01.json';
+const lvl_02 = '/JS/Graduate%20Work/data/LVL_02.json';
+const gameScript = '/JS/Graduate%20Work/js/game.js';
 
 
 let lvlData = null;

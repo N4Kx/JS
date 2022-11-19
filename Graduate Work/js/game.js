@@ -195,7 +195,7 @@ function GameModel() {
 	this.updateStorageProp = (extUrl, extName) => {
 		this.storage['url'] = extUrl;
 		this.storage['stringName'] = extName;
-		console.log(this.storage);
+		// console.log(this.storage);
 	}
 
 	// метод чтения данных из внешнего хранилища и записи их в модель игры
