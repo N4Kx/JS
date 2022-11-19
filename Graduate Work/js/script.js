@@ -1,9 +1,8 @@
 'use strict';
 
-const origin = window.location.origin;
-const lvl_01 = origin + '/JS/Graduate%20Work/data/LVL_01.json';
-const lvl_02 = '/JS/Graduate%20Work/data/LVL_02.json';
-const gameScript = '/JS/Graduate%20Work/js/game.js';
+const lvl_01 = '/Graduate%20Work/data/LVL_01.json';
+const lvl_02 = '/Graduate%20Work/data/LVL_02.json';
+const gameScript = '/Graduate%20Work/js/game.js';
 
 
 let lvlData = null;
